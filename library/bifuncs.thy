@@ -2,14 +2,14 @@
 (*           Copyright (c) 2023 David Fuenmayor               *)
 (*       MIT License (see LICENSE file for details)           *)
 (**************************************************************)
-theory bfuncs (* A basic theory of binary functions *)
+theory bifuncs (* A basic theory of binary functions *)
 imports funcs pairs
 begin
 
 section \<open>Binary Functions\<close>
 
-(*Let's put related simplification-rules in a bag (and call it "pair_simps") *)
-named_theorems bfunc_simps
+(*Let's put related simplification-rules in a bag (and call it "bifunc_simps") *)
+named_theorems bifunc_simps
 
 subsection \<open>Transforming between unary and binary functions\<close>
 
@@ -48,21 +48,21 @@ lemma \<open>\<Delta>(\<rho>\<^sub>2 f) = f\<close> unfolding combs ..
 lemma \<open>\<rho>\<^sub>1(\<Delta> g) = g\<close> nitpick oops (*counterexample - as expected*)
 lemma \<open>\<rho>\<^sub>2(\<Delta> g) = g\<close> nitpick oops (*counterexample - as expected*)
 
-lemma diag1[bfunc_simps]: \<open>(\<exists>f. g = \<rho>\<^sub>1 f) \<Longrightarrow> \<rho>\<^sub>1(\<Delta> g) = g\<close> unfolding combs by auto
-lemma diag2[bfunc_simps]: \<open>(\<exists>f. g = \<rho>\<^sub>2 f) \<Longrightarrow> \<rho>\<^sub>2(\<Delta> g) = g\<close> unfolding combs by auto
+lemma diag1[bifunc_simps]: \<open>(\<exists>f. g = \<rho>\<^sub>1 f) \<Longrightarrow> \<rho>\<^sub>1(\<Delta> g) = g\<close> unfolding combs by auto
+lemma diag2[bifunc_simps]: \<open>(\<exists>f. g = \<rho>\<^sub>2 f) \<Longrightarrow> \<rho>\<^sub>2(\<Delta> g) = g\<close> unfolding combs by auto
 
 
 section \<open>Correspondence between operations on pairs and operations on binary functions\<close>
 
 (*Reverse-projections and pair-projections correspond to each other as expected*)
-lemma rproj1[bfunc_simps]: "\<lceil>\<rho>\<^sub>1 f\<rceil> \<langle>x,y\<rangle> = f x" unfolding combs uncurry_def unfolding proj1_char ..
-lemma rproj2[bfunc_simps]: "\<lceil>\<rho>\<^sub>2 f\<rceil> \<langle>x,y\<rangle> = f y" unfolding combs uncurry_def unfolding proj2_char ..
+lemma rproj1[bifunc_simps]: "\<lceil>\<rho>\<^sub>1 f\<rceil> \<langle>x,y\<rangle> = f x" unfolding combs uncurry_def unfolding proj1_char ..
+lemma rproj2[bifunc_simps]: "\<lceil>\<rho>\<^sub>2 f\<rceil> \<langle>x,y\<rangle> = f y" unfolding combs uncurry_def unfolding proj2_char ..
 lemma rproj1_redex: "\<lceil>(\<rho>\<^sub>1 f)\<rceil> p = f (\<pi>\<^sub>1 p)" unfolding combs unfolding uncurry_def ..
 lemma rproj2_redex: "\<lceil>(\<rho>\<^sub>2 f)\<rceil> p = f (\<pi>\<^sub>2 p)" unfolding combs unfolding uncurry_def ..
 
 (*Transposition and pair-swap correspond to each other as expected:*)
-lemma transp1[bfunc_simps]: " \<lceil>(g)\<^sup>T\<rceil> (p)\<Zcat> = \<lceil>g\<rceil> p"  unfolding combs uncurry_def by simp
-lemma transp2[bfunc_simps]: " \<lceil>(\<lfloor>f\<rfloor>)\<^sup>T\<rceil> (p)\<Zcat> = f p"  unfolding transp1 unfolding curry_iso2 ..
+lemma transp1[bifunc_simps]: " \<lceil>(g)\<^sup>T\<rceil> (p)\<Zcat> = \<lceil>g\<rceil> p"  unfolding combs uncurry_def by simp
+lemma transp2[bifunc_simps]: " \<lceil>(\<lfloor>f\<rfloor>)\<^sup>T\<rceil> (p)\<Zcat> = f p"  unfolding transp1 unfolding curry_iso2 ..
 lemma transp1_redex: " \<lceil>(g)\<^sup>T\<rceil> p = \<lceil>g\<rceil> (p)\<Zcat>" unfolding combs uncurry_def by simp
 lemma transp2_redex: " \<lceil>(\<lfloor>f\<rfloor>)\<^sup>T\<rceil> p = f (p)\<Zcat>" unfolding transp1_redex unfolding curry_iso2 ..
 

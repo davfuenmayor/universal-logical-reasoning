@@ -44,12 +44,12 @@ subsection \<open>Range, image & preimage of functions\<close>
 (*Given a function f we can obtain its (functional) range as the set of those objects 'b' in the 
  codomain that are the image of some object 'a' (i.e. have a non-empty preimage) under the function f.*)
 definition fRange::"('a \<Rightarrow> 'b) \<Rightarrow> Set('b)"
-  where "fRange f \<equiv> \<lambda>b. \<exists>a. b = f a"
+  where "fRange f \<equiv> \<lambda>b. \<exists>a. f a = b"
 
 (*We can 'lift' functions to act on sets via the "image" operator.
   Read "fImage f A" as "the (functional) image of A under f".*)
 definition fImage::"('a \<Rightarrow> 'b) \<Rightarrow> Set('a) \<Rightarrow> Set('b)" ("[_ _]") (*suggestive notation*)
-  where "fImage f \<equiv> \<lambda>A. \<lambda>b. \<exists>a. b = (f a) \<and> A a"
+  where "fImage f \<equiv> \<lambda>A. \<lambda>b. \<exists>a. A a \<and> f a = b"
 
 (*Analogously, we have the "preimage" (aka. "inverse-image") operator.
   Read "fPreimage f B" as "the (functional) preimage of B under f".*)
@@ -83,17 +83,17 @@ definition injectiveFun_restr::"Set('a) \<Rightarrow> Set('a \<Rightarrow> 'b)" 
 
 (*The set of surjective functions (restricted wrt. domain-set A and codomain-set B)*)
 definition surjectiveFun::"Set('a \<Rightarrow> 'b)"
-  where "surjectiveFun f \<equiv> \<forall>b. \<exists>a. (f a) = b"
+  where "surjectiveFun f \<equiv> \<forall>b. \<exists>a. f a = b"
 definition surjectiveFun_restr::"Set('a) \<Rightarrow> Set('b) \<Rightarrow> Set('a \<Rightarrow> 'b)" ("surjectiveFun[_,_]")
-  where "surjectiveFun[A,B] f \<equiv> \<forall>b. B b \<rightarrow> (\<exists>a. A a \<and> (f a) = b)"
+  where "surjectiveFun[A,B] f \<equiv> \<forall>b. B b \<rightarrow> (\<exists>a. A a \<and> f a = b)"
 
 abbreviation "bijectiveFun f \<equiv> injectiveFun f \<and> surjectiveFun f"
 
 declare injectiveFun_def[func_defs] injectiveFun_restr_def[func_defs]
         surjectiveFun_def[func_defs] surjectiveFun_restr_def[func_defs]
 
-lemma "injectiveFun f = injectiveFun[\<UU>] f" unfolding func_defs by simp
-lemma "surjectiveFun f = surjectiveFun[\<UU>,\<UU>] f" unfolding func_defs by simp
+lemma injectiveFun_univ[func_simps]: "injectiveFun[\<UU>] f = injectiveFun f" unfolding func_defs by simp
+lemma surjectiveFun_univ[func_simps]: "surjectiveFun[\<UU>,\<UU>] f = surjectiveFun f" unfolding func_defs by simp
 
 (**The set of mappings from domain-set A *into* codomain-set B.*)
 definition mapping::"Set('a) \<Rightarrow> Set('b) \<Rightarrow> Set('a \<Rightarrow> 'b)" ("mapping[_,_]")
@@ -101,11 +101,11 @@ definition mapping::"Set('a) \<Rightarrow> Set('b) \<Rightarrow> Set('a \<Righta
 
 (**The set of mappings from domain-set A *onto* a codomain-set B.*)
 definition mappingOnto::"Set('a) \<Rightarrow> Set('b) \<Rightarrow> Set('a \<Rightarrow> 'b)" ("mappingOnto[_,_]")
-  where "mappingOnto[A,B] f \<equiv> \<forall>b. B b \<leftrightarrow> (\<exists>a. A a \<and> f a = b)"
+  where "mappingOnto[A,B] f \<equiv> (\<lambda>b. \<exists>a. A a \<and> f a = b) = B"
 
 declare mapping_def[func_defs] mappingOnto_def[func_defs]
 
-lemma mappingOnto_def2: "mappingOnto[A,B] f = (mapping[A,B] f \<and> surjectiveFun[A,B] f)" 
+lemma mappingOnto_simpdef: "mappingOnto[A,B] f = (mapping[A,B] f \<and> surjectiveFun[A,B] f)" 
   unfolding func_defs by auto
 
 abbreviation(input) embeddingMap ("embeddingMap[_,_]") 
@@ -120,8 +120,8 @@ declare bijectiveMap_def[func_defs]
 lemma "bijectiveMap[A,B] f = (injectiveFun[A] f \<and> surjectiveFun[A,B] f)"
   nitpick oops (*counterexample*)
 
-lemma bijectiveMap_simp: "bijectiveMap[\<UU>,\<UU>] f = bijectiveFun f"
-  unfolding func_defs by auto
+lemma bijectiveMap_simp[func_simps]: "bijectiveMap[\<UU>,\<UU>] f = bijectiveFun f"
+  unfolding bijectiveMap_def mappingOnto_simpdef func_defs by auto
 
 
 end
