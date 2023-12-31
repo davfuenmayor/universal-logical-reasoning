@@ -98,8 +98,10 @@ subsubsection \<open>Ring structure\<close>
  We now explore their shared (monoidal) algebraic structure with functions.*)
 
 (*Analogously to functions, relations can also be composed.*)
-abbreviation rcomp::"Rel('b,'c) \<Rightarrow> Rel('a,'b) \<Rightarrow> Rel('a,'c)" (infixl "\<circ>\<^sup>r" 75)
+definition rcomp::"('b,'c)Rel \<Rightarrow> ('a,'b)Rel \<Rightarrow> ('a,'c)Rel" (infixl "\<circ>\<^sup>r" 75)
   where "T \<circ>\<^sup>r R \<equiv> \<lambda>a c. \<exists>b. R a b \<and> T b c"
+
+declare rcomp_def[rel_defs]
 
 (*In fact, equalities play the role of identity elements (one identity for each type)*)
 notation(input) HOL.eq ("ID\<^sup>r")
