@@ -61,7 +61,7 @@ notation HOL.Ex  ("\<exists>")
 notation HOL.True  ("\<top>")
 notation HOL.False ("\<bottom>")
 
-notation HOL.Not ("'(\<not>')") (*so we can refer to negation as: (\<not>)*)
+notation(input) HOL.Not ("'(\<not>')") (*so we can refer to negation as: (\<not>)*)
 
 notation HOL.implies (infixr "\<rightarrow>" 25)
 notation HOL.iff (infixr "\<leftrightarrow>" 25)
