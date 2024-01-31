@@ -87,7 +87,7 @@ term "(R x)::Set('a)" (*the image (equivalence class) of object x under R *)
 
 (*We have in fact the following alternative definition of an equivalence relation:*)
 lemma equivalence_char: "equivalence R = (\<forall>a b. R a b = (R a = R b))" 
-  sorry (*this is a theorem (TODO: prove)*)
+  unfolding equivalence_def Reflexive_def Symmetric_def transitive_char sorry (*this is a theorem (TODO: prove)*)
 
 (*In other words: equivalence relations are the fixed-points of the kernel operation:*)
 lemma "equivalence R \<longleftrightarrow> (R = (ker R))" unfolding kernel_def by (metis equivalence_char)

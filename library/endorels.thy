@@ -9,20 +9,27 @@ begin
 subsection \<open>Special properties of (endo-)relations\<close>
 
 
-(*Set of 'reflexive' ('diagonal') elements.*)
+(*Set of 'reflexive' ('coreflexive') elements: those which 'can (only) see themselves'.*)
 definition Reflexive::"ERel('a) \<Rightarrow> Set('a)"
   where "Reflexive R \<equiv> \<lambda>a. R a a"
+definition Coreflexive::"ERel('a) \<Rightarrow> Set('a)"
+  where "Coreflexive R \<equiv> \<lambda>a. R a \<subseteq> {a}"
 
-(*Set of 'irreflexive elements'.*)
+(*Set of 'irreflexive' elements: those which 'never see themselves'.*)
 definition Irreflexive::"ERel('a) \<Rightarrow> Set('a)"
   where "Irreflexive R \<equiv> \<lambda>a. \<not>(R a a)"
 
-(*An endorelation is called 'reflexive' when its set of 'reflexive elements' is the whole domain/universe
- (i.e. every element in its domain is related to itself).*)
+(*An endorelation is called 'reflexive' ('coreflexive') when every element in its domain is (only) related to itself).*)
 abbreviation reflexive::"Set(ERel('a))"
   where \<open>reflexive R \<equiv> \<forall>(Reflexive R)\<close>
+abbreviation coreflexive::"Set(ERel('a))"
+  where \<open>coreflexive R \<equiv> \<forall>(Coreflexive R)\<close>
 
-(*An endorelation is called 'irreflexive' when its set of 'irreflexive elements' is the whole domain/universe*)
+(*An alternative, easier-to-work-with characterization of coreflexivity *)
+lemma coreflexive_char: "coreflexive R = (\<forall>a b. R a b \<longrightarrow> a = b)"
+  by (simp add: Coreflexive_def subset_def)
+
+(*Similarly, an endorelation is called 'irreflexive' when no element in its domain is related to itself.*)
 abbreviation irreflexive::"Set(ERel('a))"
   where \<open>irreflexive R \<equiv> \<forall>(Irreflexive R)\<close>
 
@@ -33,7 +40,7 @@ definition Symmetric::"ERel('a) \<Rightarrow> ERel('a)"
 abbreviation symmetric::"Set(ERel('a))"
   where \<open>symmetric R \<equiv> \<forall>x y. (Symmetric R) x y\<close>
 
-lemma "symmetric R = (\<forall>x y. R x y \<leftrightarrow> R y x)" by (metis Symmetric_def)
+lemma symmetric_char: "symmetric R = (\<forall>x y. R x y \<leftrightarrow> R y x)" by (metis Symmetric_def)
 
 (* Set of 'asymmetric pairs' (reachability not corresponded)*)
 definition Asymmetric::"ERel('a) \<Rightarrow> ERel('a)"
@@ -55,7 +62,15 @@ definition Transitive::"ERel('a) \<Rightarrow> ERel('a)"
 abbreviation transitive::"Set(ERel('a))"
   where \<open>transitive R \<equiv> \<forall>x y. (Transitive R) x y\<close>
 
+(*An alternative, easier-to-work-with characterization of transitivity *)
 lemma transitive_char: "transitive R = (\<forall>x y z. R x y \<and> R y z \<rightarrow> R x z)" by (metis Transitive_def)
+
+(*Set of 'dense' pairs (having an element in between) *)
+definition Dense::"ERel('a) \<Rightarrow> ERel('a)"
+  where \<open>Dense R \<equiv> \<lambda>a b. R a b \<rightarrow> (\<exists>c. R a c \<and> R c b)\<close>
+
+abbreviation dense::"Set(ERel('a))"
+  where \<open>dense R \<equiv> \<forall>x y. (Dense R) x y\<close>
 
 
 (*Right- and left-euclidean pairs*)

@@ -40,8 +40,8 @@ term "direction \<langle>a,b\<rangle>" (*error: not a well-formed formula*)
 
 
 (*The main statement: two lines are parallel iff their directions are identical*)
-lemma main: "parallel \<langle>a,b\<rangle> = (direction a = direction b)" 
-  unfolding direction_def by (meson REFL SYMM TRAN)
+lemma main: "parallel \<langle>a,b\<rangle> = (direction a = direction b)"
+  unfolding direction_def by (meson REFL SYMM TRAN) 
 
 (***** Beware: math jargon *****)
 (*The set of the equivalence classes of a set S wrt. an equivalence relation R is called the "quotient set" 
@@ -56,10 +56,10 @@ definition kernel::"('a \<Rightarrow> 'b) \<Rightarrow> ERel*('a)" ("ker")
   where "ker f \<equiv> \<lambda>p. f(\<pi>\<^sub>1 p) = f (\<pi>\<^sub>2 p)"
 
 (*In other words: *)
-lemma "(ker f)\<langle>a,b\<rangle> = (f a = f b)" by (simp add: kernel_def proj1_simp proj2_simp)
+lemma "(ker f)\<langle>a,b\<rangle> = (f a = f b)" by (simp add: kernel_def proj1_char proj2_char)
 
 (*The (equivalence) relation "parallel" is the kernel of the function "direction".
 Thus, the kernel operation gives us the way back from the notion of "direction" to the notion of "parallelism":*)
 lemma "(ker direction) = parallel"
-  unfolding direction_def kernel_def apply(rule ext) by (metis main mkPair_simp proj1_def)
+  unfolding direction_def kernel_def apply(rule ext) by (metis main mkPair_char)
 end

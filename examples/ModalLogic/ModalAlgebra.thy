@@ -73,15 +73,22 @@ lemma "getRelBackFromBox [i] a b = a \<rhd>\<^sup>i b"
 (*Modal correspondences (between properties of relations and their respective box/diamond modalities) *)
 
 (*Properties of unary operations on sets (aka modalities)*)
+abbreviation "Inflationary op \<equiv> \<forall>A.  A \<subseteq> (op A)"
 abbreviation "Deflationary op \<equiv> \<forall>A. (op A) \<subseteq> A"
 abbreviation "NearlyInflationary op \<equiv> \<forall>A. (op A) \<subseteq> op (op A)"
+abbreviation "NearlyDeflationary op \<equiv> \<forall>A. op (op A) \<subseteq> (op A)"
 (*...*)
 
 (*Properties of unary set-operations correspond to properties of relations*)
 lemma reflexive_corr: "Deflationary [i] = reflexive \<R>\<^sup>i"  
   unfolding iBox_def Reflexive_def subset_def by auto
+lemma coreflexive_corr: "Inflationary [i] = coreflexive \<R>\<^sup>i"
+  unfolding iBox_def coreflexive_char by (smt (verit, ccfv_threshold) Coreflexive_def subset_def)
 lemma transitive_corr: "NearlyInflationary [i] = transitive \<R>\<^sup>i"
   unfolding iBox_def transitive_char subset_def by auto 
+lemma dense_corr: "NearlyDeflationary [i] = dense \<R>\<^sup>i"
+  sorry (*TODO: reconstruction in kernel fails - fix*)
+
 (* Exercise: encode more correspondences ...*)
 
 end

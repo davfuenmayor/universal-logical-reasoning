@@ -11,9 +11,9 @@ definition equinumerous::"ERel(Set('a))" (infix "\<sim>\<^sup>n" 99) (* Set('a) 
   where "A \<sim>\<^sup>n B \<equiv> \<exists>f. bijectiveMap[A,B] f"
 
 lemma REFL: "reflexive (\<sim>\<^sup>n)" 
-  unfolding equinumerous_def Reflexive_def func_defs by auto
+  unfolding equinumerous_def Reflexive_def func_defs by fastforce
 lemma SYMM: "symmetric (\<sim>\<^sup>n)"  
-  unfolding equinumerous_def Symmetric_def func_defs by metis
+  unfolding equinumerous_def Symmetric_def func_defs sorry (*Exercise: prove*)
 lemma TRAN: "transitive (\<sim>\<^sup>n)" 
   sorry (*Exercise: prove*)
 

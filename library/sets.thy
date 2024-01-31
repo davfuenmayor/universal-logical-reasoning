@@ -17,8 +17,8 @@ subsection \<open>Constructing sets\<close>
 
 (*By extension/enumeration:*)
 abbreviation(input) oneElem::"'a \<Rightarrow> Set('a)" ("{_}")
-  where \<open>{a} \<equiv> \<lambda>x. x = a\<close>  (* i.e. (=)a *)
-  (* where \<open>{a} \<equiv> \<lambda>x. a = x\<close>  (* i.e. (=)a *) *)
+  where \<open>{a} \<equiv> \<lambda>x. a = x\<close>  (* i.e. (=)a *)
+  (* where \<open>{a} \<equiv> \<lambda>x. x = a\<close>   *)
 abbreviation(input) twoElem::"'a \<Rightarrow> 'a \<Rightarrow> Set('a)" ("{_,_}")
   where \<open>{a,b} \<equiv> \<lambda>x. a = x \<or> b = x\<close>
 abbreviation(input) threeElem::"'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarrow> Set('a)" ("{_,_,_}")
@@ -65,31 +65,41 @@ subsubsection \<open>Boolean structure\<close>
 (*We introduce below some operations on sets which endow them with a Boolean algebra structure.*)
 
 (*Set complement is a unary operation*)
-definition compl::"Set('a) \<Rightarrow> Set('a)" ("\<midarrow>") (* type same as: ('a Set,'a)Rel *)
+definition compl::"EOp(Set('a))" ("\<midarrow>") (* type same as: ('a Set,'a)Rel *)
   where \<open>\<midarrow>A \<equiv> \<lambda>x. \<not>A x\<close>
 
 (*We can also define some binary operations on sets *)
-definition inter::"Set('a) \<Rightarrow> Set('a) \<Rightarrow> Set('a)" (infixr "\<inter>" 54) 
+definition inter::"EOp\<^sub>2(Set('a))" (infixr "\<inter>" 54) 
   where "A \<inter> B \<equiv> \<lambda>x. A x \<and> B x"
-definition union::"Set('a) \<Rightarrow> Set('a) \<Rightarrow> Set('a)" (infixr "\<union>" 53) 
+definition union::"EOp\<^sub>2(Set('a))" (infixr "\<union>" 53) 
   where "A \<union> B \<equiv> \<lambda>x. A x \<or> B x"
-definition  diff::"Set('a) \<Rightarrow> Set('a) \<Rightarrow> Set('a)" (infixr "\<leftharpoonup>" 51) 
+definition  diff::"EOp\<^sub>2(Set('a))" (infixr "\<leftharpoonup>" 51) 
   where "A \<leftharpoonup> B \<equiv> \<lambda>x. A x \<and> \<not>B x" (** set difference*)
 
 (*Union and intersection can be generalized to the 'infinitary' case (i.e. operating on arbitrary sets of sets)*)
-definition biginter::"Set(Set('a)) \<Rightarrow> Set('a)" ("\<Inter>")
+definition biginter::"EOp\<^sub>N(Set('a))" ("\<Inter>")
   where "\<Inter>S \<equiv> \<lambda>x. \<forall>A. S A \<rightarrow> A x"
-definition bigunion::"Set(Set('a)) \<Rightarrow> Set('a)" ("\<Union>") 
+definition bigunion::"EOp\<^sub>N(Set('a))" ("\<Union>") 
   where "\<Union>S \<equiv> \<lambda>x. \<exists>A. S A  \<and>  A x"
 
 (*Let's put set-related definitions in the "set_defs" bag *)
 declare compl_def[set_defs] inter_def[set_defs] union_def[set_defs] diff_def[set_defs]
         biginter_def[set_defs] bigunion_def[set_defs]
 
-lemma deMorganAll_simp: "(\<not>\<exists>(\<midarrow>A)) = \<forall>A" unfolding compl_def by simp
-lemma deMorganEx_simp: "(\<not>\<forall>(\<midarrow>A)) = \<exists>A" unfolding compl_def by simp
+lemma DN: "\<midarrow>(\<midarrow>A) = A" unfolding set_defs by simp
 
-declare deMorganAll_simp[set_simps] deMorganEx_simp[set_simps]
+lemma distr1: "A \<inter> (B \<union> C) = ((A \<inter> B) \<union> (A \<inter> C))" unfolding set_defs by auto 
+lemma distr2: "A \<union> (B \<inter> C) = ((A \<union> B) \<inter> (A \<union> C))" unfolding set_defs by auto 
+lemma bigdistr1: "(A \<inter> \<Union>S) = \<Union>[(\<lambda>X. A \<inter> X) S]" unfolding func_defs set_defs by metis
+lemma bigdistr2: "(A \<union> \<Inter>S) = \<Inter>[(\<lambda>X. A \<union> X) S]" unfolding func_defs set_defs by metis
+
+lemma deMorgan1: "\<midarrow>(A \<union> B) = (\<midarrow>A \<inter> \<midarrow>B)" unfolding set_defs by simp
+lemma deMorgan2: "\<midarrow>(A \<inter> B) = (\<midarrow>A \<union> \<midarrow>B)" unfolding set_defs by simp
+lemma bigdeMorgan1: "\<midarrow>(\<Union>S) = \<Inter>[\<midarrow> S]" unfolding func_defs set_defs by metis
+lemma bigdeMorgan2: "\<midarrow>(\<Inter>S) = \<Union>[\<midarrow> S]" unfolding func_defs set_defs by metis
+
+lemma deMorganQ1: "(\<not>\<exists>(\<midarrow>A)) = \<forall>A" unfolding compl_def by simp
+lemma deMorganQ2: "(\<not>\<forall>(\<midarrow>A)) = \<exists>A" unfolding compl_def by simp
 
 
 subsubsection \<open>Ordering structure\<close>

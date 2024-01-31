@@ -48,15 +48,26 @@ definition fRange::"('a \<Rightarrow> 'b) \<Rightarrow> Set('b)"
 
 (*We can 'lift' functions to act on sets via the "image" operator.
   Read "fImage f A" as "the (functional) image of A under f".*)
-definition fImage::"('a \<Rightarrow> 'b) \<Rightarrow> Set('a) \<Rightarrow> Set('b)" ("[_ _]") (*suggestive notation*)
+definition fImage::"('a \<Rightarrow> 'b) \<Rightarrow> Set('a) \<Rightarrow> Set('b)"
   where "fImage f \<equiv> \<lambda>A. \<lambda>b. \<exists>a. A a \<and> f a = b"
 
 (*Analogously, we have the "preimage" (aka. "inverse-image") operator.
   Read "fPreimage f B" as "the (functional) preimage of B under f".*)
-definition fPreimage::"('a \<Rightarrow> 'b) \<Rightarrow> Set('b) \<Rightarrow> Set('a)" ("[_ _]\<inverse>") (*suggestive notation*)
+definition fPreimage::"('a \<Rightarrow> 'b) \<Rightarrow> Set('b) \<Rightarrow> Set('a)"
   where "fPreimage f \<equiv> \<lambda>B. \<lambda>a. B (f a)"
 
+lemma fImage_morph1: "fImage (f \<circ> g) = (fImage f) \<circ> (fImage g)" 
+  unfolding fImage_def combs by auto
+lemma fImage_morph2: "fImage ID = ID" 
+  unfolding fImage_def combs by simp
+lemma fPreimage_nmorph1: "fPreimage (f \<circ> g) = (fPreimage g) \<circ> (fPreimage f)" 
+  unfolding fPreimage_def combs ..
+lemma fPreImage_nmorph2: "fPreimage ID = ID" unfolding fPreimage_def combs ..
+
 declare fRange_def[func_defs] fImage_def[func_defs] fPreimage_def[func_defs]
+
+(*Convenient notation for the image/preimage of a set under a function*)
+notation(input) fImage ("[_ _]") and fPreimage ("[_ _]\<inverse>")
 
 (*Just for fun: we paraphrase image, preimage, and range of a function using combinators *)
 lemma "fImage = (\<^bold>B \<^bold>C) (\<^bold>B (\<^bold>B (\<^bold>B ((\<noteq>) (\<^bold>K False)))) ((\<^bold>B (\<^bold>B \<^bold>S)) ((\<^bold>B (\<^bold>B (\<^bold>B (\<and>)))) (\<^bold>C ((\<^bold>B \<^bold>B) (=))))))"

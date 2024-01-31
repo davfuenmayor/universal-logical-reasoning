@@ -16,9 +16,9 @@ named_theorems rel_simps
 subsection \<open>Basic Predicates\<close>
 
 (*Analogously to sets, we define that a given relation holds of all, resp. at least one, pair or elements.*)
-abbreviation AllR::"Set(Rel('a,'b))" ("\<forall>\<^sup>r") 
+abbreviation(input) AllR::"Set(Rel('a,'b))" ("\<forall>\<^sup>r") 
   where "\<forall>\<^sup>r R \<equiv> \<forall>a b. R a b"
-abbreviation  ExR::"Set(Rel('a,'b))" ("\<exists>\<^sup>r")
+abbreviation(input)  ExR::"Set(Rel('a,'b))" ("\<exists>\<^sup>r")
   where "\<exists>\<^sup>r R \<equiv> \<exists>a b. R a b"
 
 (* "\<exists>\<^sup>r\<^sub>\<le>\<^sub>1 R" means: R holds of at most one pair of elements (R may hold of none)*)
@@ -48,24 +48,29 @@ abbreviation emptyR::"Rel('a,'b)" ("\<emptyset>\<^sup>r")
   where "\<emptyset>\<^sup>r \<equiv> \<lambda>a. \<emptyset>"
 
 (*The complement of a relation is a unary operation. It gets a special prefix-superscript notation.*)
-abbreviation (input) complR::"Rel('a,'b) \<Rightarrow> Rel('a,'b)" ("\<midarrow>\<^sup>r") 
+abbreviation (input) complR::"EOp(Rel('a,'b))" ("\<midarrow>\<^sup>r") 
   where \<open>\<midarrow>\<^sup>rR \<equiv> \<lambda>a. \<midarrow>(R a)\<close>
 
 notation (input) complR ("'(_')\<^sup>-") (* alternative notation common in the literature *)
 
 (*We can also define some binary operations on relations *)
-abbreviation interR::"('a,'b)Rel \<Rightarrow> ('a,'b)Rel \<Rightarrow> ('a,'b)Rel" (infixr "\<inter>\<^sup>r" 54) 
+abbreviation interR::"EOp\<^sub>2(Rel('a,'b))" (infixr "\<inter>\<^sup>r" 54) 
   where "R \<inter>\<^sup>r T \<equiv> \<lambda>a. R a \<inter> T a"
-abbreviation unionR::"('a,'b)Rel \<Rightarrow> ('a,'b)Rel \<Rightarrow> ('a,'b)Rel" (infixr "\<union>\<^sup>r" 53) 
+abbreviation unionR::"EOp\<^sub>2(Rel('a,'b))" (infixr "\<union>\<^sup>r" 53) 
   where "R \<union>\<^sup>r T \<equiv> \<lambda>a. R a \<union> T a"
-abbreviation diffR:: "('a,'b)Rel \<Rightarrow> ('a,'b)Rel \<Rightarrow> ('a,'b)Rel" (infixr "\<leftharpoonup>\<^sup>r" 51) 
+abbreviation diffR:: "EOp\<^sub>2(Rel('a,'b))" (infixr "\<leftharpoonup>\<^sup>r" 51) 
   where "R \<leftharpoonup>\<^sup>r T \<equiv> \<lambda>a. R a \<leftharpoonup> T a" (** relation-difference*)
 
 (*We can also generalize union and intersection to the infinitary case*)
-abbreviation biginterR::"Set(Rel('a,'b)) \<Rightarrow> Rel('a,'b)" ("\<Inter>\<^sup>r_") 
+definition biginterR::"EOp\<^sub>N(Rel('a,'b))" ("\<Inter>\<^sup>r") 
   where "\<Inter>\<^sup>rS \<equiv> \<lambda>a. \<Inter>[(\<lambda>R. R a) S]"
-abbreviation bigunionR::"Set(Rel('a,'b)) \<Rightarrow> Rel('a,'b)" ("\<Union>\<^sup>r_") 
+definition bigunionR::"EOp\<^sub>N(Rel('a,'b))" ("\<Union>\<^sup>r") 
   where "\<Union>\<^sup>rS \<equiv> \<lambda>a. \<Union>[(\<lambda>R. R a) S]"
+
+lemma bigunionR_simpdef: "\<Inter>\<^sup>rS = (\<lambda>a b. \<forall>R. S R \<rightarrow> R a b)" 
+  unfolding set_defs fImage_def biginterR_def by metis
+lemma biginterR_simpdef: "\<Union>\<^sup>rS = (\<lambda>a b. \<exists>R. S R \<and> R a b)" 
+  unfolding set_defs fImage_def bigunionR_def by metis
 
 (*The definitions above are intuitive when seeing relations as binary predicates: *)
 lemma "\<UU>\<^sup>r = (\<lambda>a b. True)" ..
@@ -74,8 +79,23 @@ lemma "\<midarrow>\<^sup>rR = (\<lambda>a b. \<not>R a b)" unfolding set_defs ..
 lemma "R \<inter>\<^sup>r T  = (\<lambda>a b. R a b \<and> T a b)" unfolding set_defs ..
 lemma "R \<union>\<^sup>r T  = (\<lambda>a b. R a b \<or> T a b)" unfolding  set_defs ..
 lemma "R \<leftharpoonup>\<^sup>r T = (\<lambda>a b. R a b  \<and> \<not>T a b)" unfolding  set_defs ..
-lemma "\<Inter>\<^sup>rS = (\<lambda>a b. \<forall>R. S R \<rightarrow> R a b)" unfolding set_defs fImage_def by metis
-lemma "\<Union>\<^sup>rS = (\<lambda>a b. \<exists>R. S R \<and> R a b)" unfolding set_defs fImage_def by metis
+
+lemma "R \<inter>\<^sup>r (T \<union>\<^sup>r U) = ((R \<inter>\<^sup>r T) \<union>\<^sup>r (R \<inter>\<^sup>r U))" unfolding distr1 .. 
+lemma "R \<union>\<^sup>r (T \<inter>\<^sup>r U) = ((R \<union>\<^sup>r T) \<inter>\<^sup>r (R \<union>\<^sup>r U))" unfolding distr2 .. 
+lemma "\<midarrow>\<^sup>r(R \<union>\<^sup>r T) = (\<midarrow>\<^sup>rR \<inter>\<^sup>r \<midarrow>\<^sup>rT)" unfolding deMorgan1 ..
+lemma "\<midarrow>\<^sup>r(R \<inter>\<^sup>r T) = (\<midarrow>\<^sup>rR \<union>\<^sup>r \<midarrow>\<^sup>rT)" unfolding deMorgan2 ..
+
+lemma bigdistrR1: "(R \<inter>\<^sup>r \<Union>\<^sup>rS) = \<Union>\<^sup>r[(\<lambda>X. R \<inter>\<^sup>r X) S]" 
+  unfolding func_defs set_defs bigunionR_def by fastforce 
+lemma bigdistrR2: "(R \<union>\<^sup>r \<Inter>\<^sup>rS) = \<Inter>\<^sup>r[(\<lambda>X. R \<union>\<^sup>r X) S]"
+  unfolding func_defs set_defs biginterR_def by fastforce
+lemma bigdeMorganR1: "\<midarrow>\<^sup>r(\<Union>\<^sup>rS) = \<Inter>\<^sup>r[\<midarrow>\<^sup>r S]" 
+  unfolding func_defs set_defs bigunionR_def biginterR_def by fastforce
+lemma bigdeMorganR2: "\<midarrow>\<^sup>r(\<Inter>\<^sup>rS) = \<Union>\<^sup>r[\<midarrow>\<^sup>r S]" 
+  unfolding func_defs set_defs bigunionR_def biginterR_def by fastforce
+
+lemma deMorganQR1: "(\<not>\<exists>\<^sup>r(\<midarrow>\<^sup>rA)) = \<forall>\<^sup>rA" unfolding compl_def by simp
+lemma deMorganQR2: "(\<not>\<forall>\<^sup>r(\<midarrow>\<^sup>rA)) = \<exists>\<^sup>rA" unfolding compl_def by simp
 
 
 subsubsection \<open>Ordering structure\<close>
@@ -125,15 +145,15 @@ abbreviation(input) sum::"Set('a) \<Rightarrow> Set('b) \<Rightarrow> Rel('a,'b)
   where "A \<uplus> B \<equiv> \<lambda>x y. A x \<or> B y"
 
 (*Restricting the domain of a relation to a subset A*)
-abbreviation(input) restrDom::"Set('a) \<Rightarrow> Rel('a,'b) \<Rightarrow> Rel('a,'b)" ("_\<downharpoonleft>") 
+abbreviation(input) restrDom::"Set('a) \<Rightarrow> EOp(Rel('a,'b))" ("_\<downharpoonleft>") 
   where \<open>A\<downharpoonleft>R \<equiv> \<lambda>a b. A a \<and> R a b\<close>
 
 (*Restricting the codomain of a relation to a subset B*)
-abbreviation(input) restrCod::"Set('b) \<Rightarrow> Rel('a,'b) \<Rightarrow> Rel('a,'b)" ("_\<downharpoonright>") 
+abbreviation(input) restrCod::"Set('b) \<Rightarrow> EOp(Rel('a,'b))" ("_\<downharpoonright>") 
   where \<open>B\<downharpoonright>R \<equiv> \<lambda>a b. B b \<and> R a b\<close>
 
 (*Restricting both domain and codomain of a relation wrt. the given subsets A and B*)
-abbreviation(input) restrBoth::"Set('a) \<Rightarrow> Set('b) \<Rightarrow> Rel('a,'b) \<Rightarrow> Rel('a,'b)" ("'(_,_')\<down>"[99]) 
+abbreviation(input) restrBoth::"Set('a) \<Rightarrow> Set('b) \<Rightarrow> EOp(Rel('a,'b))" ("'(_,_')\<down>"[99]) 
   where \<open>(A,B)\<down>R \<equiv> \<lambda>a b. A a \<and> B b \<and> R a b\<close>
 
 lemma "A\<downharpoonleft>R = (A \<times> \<UU>) \<inter>\<^sup>r R" unfolding inter_def by simp
@@ -238,7 +258,7 @@ subsection \<open>From functions to relations (and viceversa)\<close>
 (*The "inverse" of a function 'f' is the a relation that assigns to each object 'b' in f's codomain
   the set of 'a's in f's domain that 'f' maps to 'b' (i.e. 'b's preimage under 'f') *)
 definition inverse::"('a \<Rightarrow> 'b) \<Rightarrow> Rel('b,'a)" ("[_]\<inverse>")
-  where "inverse f \<equiv> \<lambda>b. \<lambda>a. b = f a"
+  where "inverse f \<equiv> \<lambda>b. \<lambda>a. f a = b"
 
 declare inverse_def[rel_defs]
 
@@ -248,11 +268,11 @@ lemma "surjectiveRel [f]\<inverse>" unfolding rel_defs by (simp add: Uniq_def)
 
 
 (*The inverse in terms of combinators*)
-lemma "inverse = \<^bold>C ((\<^bold>B \<^bold>B) (=))"  unfolding combs inverse_def ..
-lemma "inverse = \<^bold>B (\<^bold>B'(=)) \<^bold>B'" unfolding combs inverse_def ..
+lemma "inverse = \<^bold>C ((\<^bold>B \<^bold>B) (=))"  unfolding combs inverse_def by auto
+lemma "inverse = \<^bold>B (\<^bold>B'(=)) \<^bold>B'" unfolding combs inverse_def by auto
 
 (*The inverse in terms of preimage*)
-lemma "[f ((=) b)]\<inverse> = [f]\<inverse> b" unfolding rel_defs func_defs ..
+lemma "[f {b}]\<inverse> = [f]\<inverse> b" unfolding rel_defs func_defs by auto
 
 (*Several operations and predicates on functions can be expressed in terms of the inverse*)
 lemma imageFun_def2: "fImage f = (\<lambda>A. (\<lambda>b. [f]\<inverse> b \<inter> A \<noteq> \<emptyset>))" 
@@ -260,11 +280,11 @@ lemma imageFun_def2: "fImage f = (\<lambda>A. (\<lambda>b. [f]\<inverse> b \<int
 lemma rangeFun_def2: "fRange f = (\<lambda>b. \<exists>([f]\<inverse> b))"
   unfolding func_defs rel_defs ..
 lemma "surjectiveFun[\<UU>,B] f = totalRel[B] [f]\<inverse>"
-  unfolding func_defs set_defs rel_defs by auto
+  unfolding func_defs set_defs rel_defs by simp
 lemma "surjectiveFun f = totalRel [f]\<inverse>"
-  unfolding func_defs rel_defs by metis
+  unfolding func_defs rel_defs ..
 lemma "injectiveFun f = deterministicRel [f]\<inverse>"
-  unfolding func_defs rel_defs set_defs by simp
+  unfolding func_defs rel_defs set_defs by auto
 
 (*The inverse of a function gets its name from the following property of injective functions:*)
 lemma "injectiveFun f \<rightarrow> \<iota> \<circ> [f]\<inverse> \<circ> f = ID"

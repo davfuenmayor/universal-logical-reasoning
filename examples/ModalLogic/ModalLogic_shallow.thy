@@ -67,4 +67,43 @@ lemma "\<Turnstile> \<^bold>\<forall>x. \<^bold>\<box>\<^sup>\<one>(A x) \<^bold
 lemma "\<Turnstile> (\<^bold>\<box>\<^sup>\<two>A \<^bold>\<and> \<^bold>\<box>\<^sup>\<two>A) \<^bold>\<rightarrow> \<^bold>\<box>\<^sup>\<two>A" 
   by (simp add: compl_def inter_def union_def)
 
+typedecl i
+consts a::i
+consts b::i
+(*and so on...*)
+
+lemma "\<Turnstile> \<^bold>\<forall>x. \<^bold>\<box>\<^sup>a(A x) \<^bold>\<rightarrow> \<^bold>\<box>\<^sup>a(\<^bold>\<forall>x. A x)"
+  by (metis compl_def iBox_def qforall_def union_def)
+lemma "\<Turnstile> (\<^bold>\<box>\<^sup>b A \<^bold>\<and> \<^bold>\<box>\<^sup>b A) \<^bold>\<rightarrow> \<^bold>\<box>\<^sup>b A" 
+  by (simp add: compl_def inter_def union_def)
+
+lemma refl_dense: "reflexive (\<R>\<^sup>i) \<longrightarrow> dense (\<R>\<^sup>i)" 
+  by (meson dense_corr reflexive_corr)
+
+(*An example use case: *)
+locale Example =
+  assumes  a_trans: "transitive \<R>\<^sup>a" 
+      and  b_trans: "transitive \<R>\<^sup>b"
+      and  a_refl:  "reflexive \<R>\<^sup>a"  
+      and  b_dense: "dense \<R>\<^sup>b"
+      and  Gab: "\<forall>p. \<Turnstile> (\<^bold>\<box>\<^sup>a p) \<^bold>\<rightarrow> (\<^bold>\<diamond>\<^sup>b p)"
+begin
+
+(*Checks some well known modal axioms (K, T, 4, X)*)
+lemma a_K: "\<Turnstile> \<^bold>\<box>\<^sup>a(A \<^bold>\<rightarrow> B) \<^bold>\<rightarrow> (\<^bold>\<box>\<^sup>a A \<^bold>\<rightarrow> \<^bold>\<box>\<^sup>a B)" by (metis compl_def iBox_def union_def)
+lemma b_K: "\<Turnstile> \<^bold>\<box>\<^sup>b(A \<^bold>\<rightarrow> B) \<^bold>\<rightarrow> (\<^bold>\<box>\<^sup>b A \<^bold>\<rightarrow> \<^bold>\<box>\<^sup>b B)" by (metis compl_def iBox_def union_def)
+lemma a_4: "\<Turnstile> (\<^bold>\<box>\<^sup>a A) \<^bold>\<rightarrow> (\<^bold>\<box>\<^sup>a(\<^bold>\<box>\<^sup>a A))" by (metis a_trans compl_def subset_def transitive_corr union_def)
+lemma b_4: "\<Turnstile> (\<^bold>\<box>\<^sup>b A) \<^bold>\<rightarrow> (\<^bold>\<box>\<^sup>b(\<^bold>\<box>\<^sup>b A))" by (metis b_trans compl_def subset_def transitive_corr union_def)
+lemma a_T: "\<Turnstile> (\<^bold>\<box>\<^sup>a A) \<^bold>\<rightarrow> A" by (metis a_refl compl_def reflexive_corr subset_def union_def)
+lemma b_X: "\<Turnstile> (\<^bold>\<box>\<^sup>b(\<^bold>\<box>\<^sup>b A)) \<^bold>\<rightarrow> \<^bold>\<box>\<^sup>b A" by (metis b_dense compl_def dense_corr subset_def union_def)
+
+(*tests*)
+lemma "\<Turnstile> (\<^bold>\<box>\<^sup>a p) \<^bold>\<rightarrow> (\<^bold>\<box>\<^sup>b p)" nitpick[card i=2,card w=2] oops (*counterexample*)
+lemma "\<Turnstile> (\<^bold>\<box>\<^sup>a p) \<^bold>\<rightarrow> (\<^bold>\<box>\<^sup>a(\<^bold>\<diamond>\<^sup>b p))" by (metis a_4 Gab compl_def iBox_def union_def)
+lemma "\<Turnstile> (\<^bold>\<diamond>\<^sup>b(\<^bold>\<box>\<^sup>a p)) \<^bold>\<rightarrow> (\<^bold>\<diamond>\<^sup>b p)" by (metis a_T compl_def iDia_def union_def)
+lemma "\<Turnstile> (\<^bold>\<box>\<^sup>b(\<^bold>\<box>\<^sup>a p)) \<^bold>\<rightarrow> (\<^bold>\<box>\<^sup>b p)" by (metis a_T compl_def iBox_def union_def)
+lemma "\<Turnstile> A \<longrightarrow> \<Turnstile> (\<^bold>\<box>\<^sup>b A) \<^bold>\<leftrightarrow> (\<^bold>\<box>\<^sup>a A)" by (simp add: compl_def union_def)
+
+end
+
 end
