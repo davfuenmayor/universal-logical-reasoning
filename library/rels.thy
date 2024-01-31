@@ -185,7 +185,13 @@ definition rImage::"Rel('a,'b) \<Rightarrow> Set('a) \<Rightarrow> Set('b)"
 (*Analogously, we define the "preimage" (aka. "inverse-image") set-operator corresponding to a relation.
   Read "rPreimage R B" as "the (relational) preimage of B under R".*)
 definition rPreimage::"Rel('a,'b) \<Rightarrow> Set('b) \<Rightarrow> Set('a)"
-  where "rPreimage \<equiv> \<lambda>R. \<lambda>B. \<lambda>a. \<exists>b. R a b \<and> B b"
+  where "rPreimage R \<equiv> \<lambda>B. \<lambda>a. \<exists>b. R a b \<and> B b"
+
+(*The notions of image and preimage of relations have in fact their 'dual' counterparts:*)
+definition rDualImage::"Rel('a,'b) \<Rightarrow> Set('a) \<Rightarrow> Set('b)"
+  where "rDualImage R    \<equiv> \<lambda>A. \<lambda>b. \<forall>a. R a b \<longrightarrow> A a"
+definition rDualPreimage::"Rel('a,'b) \<Rightarrow> Set('b) \<Rightarrow> Set('a)"
+  where "rDualPreimage R \<equiv> \<lambda>B. \<lambda>a. \<forall>b. R a b \<longrightarrow> B b"
 
 declare rRange_def[rel_defs] rImage_def[rel_defs] rPreimage_def[rel_defs]
 

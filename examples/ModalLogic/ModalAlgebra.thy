@@ -59,6 +59,10 @@ term "<i>([i]B) \<union> \<midarrow>(<i>A)"
 lemma "[i]A = \<midarrow>(<i>(\<midarrow>A))" 
   unfolding iBox_def iDia_def set_defs by simp
 
+(*The box and the diamond operations correspond in fact to well-known set-operators based on relations:*)
+lemma iDia_char: "<i> = rPreimage (\<R>\<^sup>i)" unfolding iDia_def rPreimage_def by simp
+lemma iBox_char: "[i] = rDualPreimage (\<R>\<^sup>i)" unfolding iBox_def rDualPreimage_def by simp
+
 
 (*Transforming between modal operators back to relations*)
 abbreviation getRelBackFromBox::"EOp(Set(w)) \<Rightarrow> ERel(w)"

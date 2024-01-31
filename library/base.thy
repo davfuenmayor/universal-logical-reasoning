@@ -47,6 +47,8 @@ no_notation (*so we can use those symbols for our own purposes*)
   BNF_Def.convol ("\<langle>(_,/ _)\<rangle>") and
   Product_Type.Pair ("(_,/ _)" [21, 20] 20) and
   Fields.inverse_class.inverse_divide (infixl "'/" 70)
+no_syntax
+  "_Finset" :: "args \<Rightarrow> 'a set"    ("{(_)}")
 
 
 (**********************  Alternative notations ***************************)
