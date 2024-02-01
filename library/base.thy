@@ -29,6 +29,7 @@ hide_const(open) Set.subset Set.subset_eq Set.supset Set.supset_eq
                  BNF_Def.convol 
                  Product_Type.prod Product_Type.Pair Product_Type.Pair_Rep
                  Fields.inverse_class.inverse_divide
+                 Transitive_Closure.trancl Transitive_Closure.rtrancl
 
 no_notation (*so we can use those symbols for our own purposes*)
   Set.subset  ("'(\<subset>')") and Set.subset  ("(_/ \<subset> _)" [51, 51] 50) and
@@ -46,7 +47,8 @@ no_notation (*so we can use those symbols for our own purposes*)
   Orderings.bot_class.bot ("\<bottom>") and
   BNF_Def.convol ("\<langle>(_,/ _)\<rangle>") and
   Product_Type.Pair ("(_,/ _)" [21, 20] 20) and
-  Fields.inverse_class.inverse_divide (infixl "'/" 70)
+  Fields.inverse_class.inverse_divide (infixl "'/" 70) and
+  Transitive_Closure.trancl ("(_\<^sup>+)" [1000] 999) and Transitive_Closure.rtrancl ("(_\<^sup>*)" [1000] 999)
 no_syntax
   "_Finset" :: "args \<Rightarrow> 'a set"    ("{(_)}")
 
