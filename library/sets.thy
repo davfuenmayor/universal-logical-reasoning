@@ -90,13 +90,13 @@ lemma DN: "\<midarrow>(\<midarrow>A) = A" unfolding set_defs by simp
 
 lemma distr1: "A \<inter> (B \<union> C) = ((A \<inter> B) \<union> (A \<inter> C))" unfolding set_defs by auto 
 lemma distr2: "A \<union> (B \<inter> C) = ((A \<union> B) \<inter> (A \<union> C))" unfolding set_defs by auto 
-lemma bigdistr1: "(A \<inter> \<Union>S) = \<Union>[(\<lambda>X. A \<inter> X) S]" unfolding func_defs set_defs by metis
-lemma bigdistr2: "(A \<union> \<Inter>S) = \<Inter>[(\<lambda>X. A \<union> X) S]" unfolding func_defs set_defs by metis
+lemma bigdistr1: "(A \<inter> \<Union>S) = \<Union>\<lbrakk>(\<lambda>X. A \<inter> X) S\<rbrakk>" unfolding func_defs set_defs by metis
+lemma bigdistr2: "(A \<union> \<Inter>S) = \<Inter>\<lbrakk>(\<lambda>X. A \<union> X) S\<rbrakk>" unfolding func_defs set_defs by metis
 
 lemma deMorgan1: "\<midarrow>(A \<union> B) = (\<midarrow>A \<inter> \<midarrow>B)" unfolding set_defs by simp
 lemma deMorgan2: "\<midarrow>(A \<inter> B) = (\<midarrow>A \<union> \<midarrow>B)" unfolding set_defs by simp
-lemma bigdeMorgan1: "\<midarrow>(\<Union>S) = \<Inter>[\<midarrow> S]" unfolding func_defs set_defs by metis
-lemma bigdeMorgan2: "\<midarrow>(\<Inter>S) = \<Union>[\<midarrow> S]" unfolding func_defs set_defs by metis
+lemma bigdeMorgan1: "\<midarrow>(\<Union>S) = \<Inter>\<lbrakk>\<midarrow> S\<rbrakk>" unfolding func_defs set_defs by metis
+lemma bigdeMorgan2: "\<midarrow>(\<Inter>S) = \<Union>\<lbrakk>\<midarrow> S\<rbrakk>" unfolding func_defs set_defs by metis
 
 lemma deMorganQ1: "(\<not>\<exists>(\<midarrow>A)) = \<forall>A" unfolding compl_def by simp
 lemma deMorganQ2: "(\<not>\<forall>(\<midarrow>A)) = \<exists>A" unfolding compl_def by simp

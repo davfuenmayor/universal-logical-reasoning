@@ -51,6 +51,7 @@ no_notation (*so we can use those symbols for our own purposes*)
   Transitive_Closure.trancl ("(_\<^sup>+)" [1000] 999) and Transitive_Closure.rtrancl ("(_\<^sup>*)" [1000] 999)
 no_syntax
   "_Finset" :: "args \<Rightarrow> 'a set"    ("{(_)}")
+  "_list" :: "args => 'a list"    ("[(_)]")
 
 
 (**********************  Alternative notations ***************************)

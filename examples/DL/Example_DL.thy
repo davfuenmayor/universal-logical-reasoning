@@ -2,8 +2,8 @@
 (*           Copyright (c) 2023 David Fuenmayor               *)
 (*       MIT License (see LICENSE file for details)           *)
 (**************************************************************)
-theory example1
-  imports "description_logics"
+theory Example_DL
+  imports "DescriptionLogic"
 begin
 
 

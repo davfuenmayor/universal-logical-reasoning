@@ -63,13 +63,13 @@ abbreviation diffR:: "EOp\<^sub>2(Rel('a,'b))" (infixr "\<leftharpoonup>\<^sup>r
 
 (*We can also generalize union and intersection to the infinitary case*)
 definition biginterR::"EOp\<^sub>N(Rel('a,'b))" ("\<Inter>\<^sup>r") 
-  where "\<Inter>\<^sup>rS \<equiv> \<lambda>a. \<Inter>[(\<lambda>R. R a) S]"
+  where "\<Inter>\<^sup>rS \<equiv> \<lambda>a. \<Inter>\<lbrakk>(\<lambda>R. R a) S\<rbrakk>"
 definition bigunionR::"EOp\<^sub>N(Rel('a,'b))" ("\<Union>\<^sup>r") 
-  where "\<Union>\<^sup>rS \<equiv> \<lambda>a. \<Union>[(\<lambda>R. R a) S]"
+  where "\<Union>\<^sup>rS \<equiv> \<lambda>a. \<Union>\<lbrakk>(\<lambda>R. R a) S\<rbrakk>"
 
-lemma bigunionR_simpdef: "\<Inter>\<^sup>rS = (\<lambda>a b. \<forall>R. S R \<rightarrow> R a b)" 
+lemma biginterR_simpdef: "\<Inter>\<^sup>rS = (\<lambda>a b. \<forall>R. S R \<rightarrow> R a b)" 
   unfolding set_defs fImage_def biginterR_def by metis
-lemma biginterR_simpdef: "\<Union>\<^sup>rS = (\<lambda>a b. \<exists>R. S R \<and> R a b)" 
+lemma bigunionR_simpdef: "\<Union>\<^sup>rS = (\<lambda>a b. \<exists>R. S R \<and> R a b)" 
   unfolding set_defs fImage_def bigunionR_def by metis
 
 (*The definitions above are intuitive when seeing relations as binary predicates: *)
@@ -85,13 +85,13 @@ lemma "R \<union>\<^sup>r (T \<inter>\<^sup>r U) = ((R \<union>\<^sup>r T) \<int
 lemma "\<midarrow>\<^sup>r(R \<union>\<^sup>r T) = (\<midarrow>\<^sup>rR \<inter>\<^sup>r \<midarrow>\<^sup>rT)" unfolding deMorgan1 ..
 lemma "\<midarrow>\<^sup>r(R \<inter>\<^sup>r T) = (\<midarrow>\<^sup>rR \<union>\<^sup>r \<midarrow>\<^sup>rT)" unfolding deMorgan2 ..
 
-lemma bigdistrR1: "(R \<inter>\<^sup>r \<Union>\<^sup>rS) = \<Union>\<^sup>r[(\<lambda>X. R \<inter>\<^sup>r X) S]" 
+lemma bigdistrR1: "(R \<inter>\<^sup>r \<Union>\<^sup>rS) = \<Union>\<^sup>r\<lbrakk>(\<lambda>X. R \<inter>\<^sup>r X) S\<rbrakk>" 
   unfolding func_defs set_defs bigunionR_def by fastforce 
-lemma bigdistrR2: "(R \<union>\<^sup>r \<Inter>\<^sup>rS) = \<Inter>\<^sup>r[(\<lambda>X. R \<union>\<^sup>r X) S]"
+lemma bigdistrR2: "(R \<union>\<^sup>r \<Inter>\<^sup>rS) = \<Inter>\<^sup>r\<lbrakk>(\<lambda>X. R \<union>\<^sup>r X) S\<rbrakk>"
   unfolding func_defs set_defs biginterR_def by fastforce
-lemma bigdeMorganR1: "\<midarrow>\<^sup>r(\<Union>\<^sup>rS) = \<Inter>\<^sup>r[\<midarrow>\<^sup>r S]" 
+lemma bigdeMorganR1: "\<midarrow>\<^sup>r(\<Union>\<^sup>rS) = \<Inter>\<^sup>r\<lbrakk>\<midarrow>\<^sup>r S\<rbrakk>" 
   unfolding func_defs set_defs bigunionR_def biginterR_def by fastforce
-lemma bigdeMorganR2: "\<midarrow>\<^sup>r(\<Inter>\<^sup>rS) = \<Union>\<^sup>r[\<midarrow>\<^sup>r S]" 
+lemma bigdeMorganR2: "\<midarrow>\<^sup>r(\<Inter>\<^sup>rS) = \<Union>\<^sup>r\<lbrakk>\<midarrow>\<^sup>r S\<rbrakk>" 
   unfolding func_defs set_defs bigunionR_def biginterR_def by fastforce
 
 lemma deMorganQR1: "(\<not>\<exists>\<^sup>r(\<midarrow>\<^sup>rA)) = \<forall>\<^sup>rA" unfolding compl_def by simp
@@ -278,7 +278,7 @@ lemma "inverse = \<^bold>C ((\<^bold>B \<^bold>B) (=))"  unfolding combs inverse
 lemma "inverse = \<^bold>B (\<^bold>B'(=)) \<^bold>B'" unfolding combs inverse_def by auto
 
 (*The inverse in terms of preimage*)
-lemma "[f {b}]\<inverse> = [f]\<inverse> b" unfolding rel_defs func_defs by auto
+lemma "\<lbrakk>f {b}\<rbrakk>\<inverse> = [f]\<inverse> b" unfolding rel_defs func_defs by auto
 
 (*Several operations and predicates on functions can be expressed in terms of the inverse*)
 lemma imageFun_def2: "fImage f = (\<lambda>A. (\<lambda>b. [f]\<inverse> b \<inter> A \<noteq> \<emptyset>))" 

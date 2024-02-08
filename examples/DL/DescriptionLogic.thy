@@ -2,7 +2,7 @@
 (*           Copyright (c) 2023 David Fuenmayor               *)
 (*       MIT License (see LICENSE file for details)           *)
 (**************************************************************)
-theory description_logics
+theory DescriptionLogic
   imports "../../library/endorels"
 begin
 

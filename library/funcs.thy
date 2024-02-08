@@ -67,7 +67,7 @@ lemma fPreImage_nmorph2: "fPreimage ID = ID" unfolding fPreimage_def combs ..
 declare fRange_def[func_defs] fImage_def[func_defs] fPreimage_def[func_defs]
 
 (*Convenient notation for the image/preimage of a set under a function*)
-notation(input) fImage ("[_ _]") and fPreimage ("[_ _]\<inverse>")
+notation(input) fImage ("\<lbrakk>_ _\<rbrakk>") and fPreimage ("\<lbrakk>_ _\<rbrakk>\<inverse>")
 
 (*Just for fun: we paraphrase image, preimage, and range of a function using combinators *)
 lemma "fImage = (\<^bold>B \<^bold>C) (\<^bold>B (\<^bold>B (\<^bold>B ((\<noteq>) (\<^bold>K False)))) ((\<^bold>B (\<^bold>B \<^bold>S)) ((\<^bold>B (\<^bold>B (\<^bold>B (\<and>)))) (\<^bold>C ((\<^bold>B \<^bold>B) (=))))))"
