@@ -36,6 +36,9 @@ notation union (infixr "\<^bold>\<or>" 53)
 notation univ  ("\<^bold>\<top>")
 notation empty ("\<^bold>\<bottom>")
 
+abbreviation limp (infix "\<^bold>\<rightarrow>" 90)
+  where "A \<^bold>\<rightarrow> B \<equiv> \<^bold>\<not>A \<^bold>\<or> B"
+
 
 section \<open>Operations\<close>
 
@@ -65,24 +68,45 @@ lemma "<a+b>P = (<a>P) \<^bold>\<or> (<b>P)" unfolding inter_def union_def by bl
 abbreviation choiceS::"Set(\<pi>) \<Rightarrow> \<pi>" ("\<Sigma>")
   where "\<Sigma> S \<equiv> \<Union>\<^sup>rS" 
 
-lemma "[\<Sigma> S]P = \<Inter>\<lbrakk>(\<lambda>x. [x]P) S\<rbrakk>" unfolding  biginter_def bigunionR_simpdef fImage_def by fastforce
-lemma "<\<Sigma> S>P = \<Union>\<lbrakk>(\<lambda>x. <x>P) S\<rbrakk>" unfolding  bigunion_def bigunionR_simpdef fImage_def by fastforce
+lemma "[ \<Sigma> S ]P = \<Inter>\<lbrakk>(\<lambda>x. [x]P) S\<rbrakk>" unfolding  biginter_def bigunionR_simpdef fImage_def by fastforce
+lemma "< \<Sigma> S >P = \<Union>\<lbrakk>(\<lambda>x. <x>P) S\<rbrakk>" unfolding  bigunion_def bigunionR_simpdef fImage_def by fastforce
 
-(*(Reflexive-)transitive closure: "repeat a an undetermined number of times"*)
+(*(Reflexive-)transitive closure: "repeat 'a' an undetermined number of times"*)
 definition tran_closure::"\<pi> \<Rightarrow> \<pi>" ("(_\<^sup>+)" 99)
   where "a\<^sup>+ \<equiv> \<Inter>\<^sup>r(\<lambda>R. transitive R \<and> a \<subseteq>\<^sup>r R)"
 abbreviation refl_tran_closure::"\<pi> \<Rightarrow> \<pi>" ("(_\<^sup>* )" [1000] 999)
-  where "a\<^sup>* \<equiv> a\<^sup>+ \<union>\<^sup>r (=)"
+  where "a\<^sup>* \<equiv> a\<^sup>+ + (=)"
 
 (*Some properties of the transitive and reflexive-transitive closure: *)
 lemma "a\<^sup>+ = (a\<^sup>* ; a)" oops (*this holds but needs to be proven by hand*) 
 lemma "q \<subseteq> p \<^bold>\<and> [a]q \<longrightarrow> q \<subseteq> [a\<^sup>*]p" oops (*this holds but needs to be proven by hand*) 
+
+(*We can translate the previous to talk of agents and knowledge:*)
 
 (*\<^bold>E\<^sup>GP stands for "Everyone in group G knows that P"*)
 abbreviation Eknows ("\<^bold>E\<^sup>_") where "\<^bold>E\<^sup>G P \<equiv> [\<Sigma> G]P"
 (*\<^bold>C\<^sup>GP stands for "It is common knowledge in group G that P"*)
 abbreviation Cknows ("\<^bold>C\<^sup>_") where "\<^bold>C\<^sup>G P \<equiv> [(\<Sigma> G)\<^sup>+]P"
 
+abbreviation valid ("\<Turnstile>_") where "\<Turnstile> P \<equiv> \<forall>w. P w"
+
 (*Exercise: encode the "muddy children" and "wise men" puzzle using the constructions above*)
+consts muddy :: "\<pi>\<Rightarrow>\<sigma>" (*muddy a: a has a dirt spot.*) 
+consts children :: "\<pi>\<Rightarrow>bool" (*child a: a is child.*)
+consts a::"\<pi>" b::"\<pi>" c::"\<pi>"
+axiomatization where 
+    Am1: "children a \<and> children b \<and> children c" and
+    A0: "\<forall>x. children x \<longrightarrow> equivalence x" and
+   (*Common knowledge: at least one of them is muddy*)
+   A1: "\<Turnstile> (Cknows children) (muddy a \<^bold>\<or> muddy b \<^bold>\<or> muddy c)" and
+   (*Common knowledge: if x is (not) muddy then y can see this (and hence know this).*)
+   A2: "children x \<and> children y \<and> x \<noteq> y \<Longrightarrow> \<Turnstile> (Cknows children) ((muddy x) \<^bold>\<rightarrow> ([y] (muddy x)))" and
+   A3: "children x \<and> children y \<and> x \<noteq> y \<Longrightarrow> \<Turnstile> (Cknows children) (\<^bold>\<not>(muddy x) \<^bold>\<rightarrow> ([y] \<^bold>\<not>(muddy x)))" and
+   (*Common knowledge: a does not know whether he has a white spot.*)
+   A4: "\<Turnstile> (Cknows children) ((\<^bold>\<not>[a](muddy a)) \<^bold>\<and> \<^bold>\<not>[b](muddy b))"
+theorem  (*c knows he is muddy.*)
+   T1: " \<Turnstile> [c](muddy c)" using Am1 A0 A1 A2 A3 A4 
+  unfolding biginterR_simpdef bigunionR_simpdef compl_def subset_def tran_closure_def union_def
+  by (smt (verit))
 
 end
