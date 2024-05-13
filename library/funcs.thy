@@ -67,7 +67,7 @@ lemma fPreImage_nmorph2: "fPreimage ID = ID" unfolding fPreimage_def combs ..
 declare fRange_def[func_defs] fImage_def[func_defs] fPreimage_def[func_defs]
 
 (*Convenient notation for the image/preimage of a set under a function*)
-notation(input) fImage ("\<lbrakk>_ _\<rbrakk>") and fPreimage ("\<lbrakk>_ _\<rbrakk>\<inverse>")
+notation fImage ("\<lbrakk>_ _\<rbrakk>") and fPreimage ("\<lbrakk>_ _\<rbrakk>\<inverse>")
 
 (*Just for fun: we paraphrase image, preimage, and range of a function using combinators *)
 lemma "fImage = (\<^bold>B \<^bold>C) (\<^bold>B (\<^bold>B (\<^bold>B ((\<noteq>) (\<^bold>K False)))) ((\<^bold>B (\<^bold>B \<^bold>S)) ((\<^bold>B (\<^bold>B (\<^bold>B (\<and>)))) (\<^bold>C ((\<^bold>B \<^bold>B) (=))))))"
@@ -133,6 +133,44 @@ lemma "bijectiveMap[A,B] f = (injectiveFun[A] f \<and> surjectiveFun[A,B] f)"
 
 lemma bijectiveMap_simp[func_simps]: "bijectiveMap[\<UU>,\<UU>] f = bijectiveFun f"
   unfolding bijectiveMap_def mappingOnto_simpdef func_defs by auto
+
+(*Properties of function composition*)
+lemma mapping_comp: "mapping[A,B] f \<Longrightarrow> mapping[B,C] g \<Longrightarrow> mapping[A,C] (g\<circ>f)" 
+  by (simp add: Bc_def mapping_def)
+
+lemma embeddingMap_comp: "embeddingMap[A,B] f \<Longrightarrow> embeddingMap[B,C] g \<Longrightarrow> embeddingMap[A,C] (g\<circ>f)" 
+  by (simp add: Bc_def injectiveFun_restr_def mapping_def)
+
+lemma surjective_comp: "surjectiveFun[A,B] f \<Longrightarrow> surjectiveFun[B,C] g \<Longrightarrow> surjectiveFun[A,C] (g\<circ>f)"
+  unfolding surjectiveFun_restr_def Bc_def by (smt (z3))
+
+lemma mappingOnto_comp: "mappingOnto[A,B] f \<Longrightarrow> mappingOnto[B,C] g \<Longrightarrow> mappingOnto[A,C] (g\<circ>f)" 
+  unfolding mappingOnto_simpdef using mapping_comp surjective_comp by blast
+
+
+(*Further interesting lemmata*)
+
+(*If A can be mapped injectively (embedded) into B then B can be mapped onto A (assuming A non-empty)
+Proof idea: Starting with an injection f from A into B, construct an (surjective) mapping g from 
+ B onto A, recalling that for x \<in> B we have that f\<inverse>(x) \<inter> A is either:
+  (1) a singleton: take g(x) = \<iota>x.f\<inverse>(x) (because f is injective wrt A)
+  (2) empty: take g(x) = c for an arbitrary c \<in> A (since A is non-empty)  *)
+lemma inj_surj_prop1: "\<exists>A \<Longrightarrow> \<exists>f. embeddingMap[A,B] f \<Longrightarrow> \<exists>g. mappingOnto[B,A] g" 
+  sorry (*TODO: exercise*)
+
+(*If A can be mapped onto B then B can be mapped injectively (embedded) into A
+Proof idea: Start with a map f from A onto B, let g' be the (injective) mapping from B onto A/kernel(f).
+ Define g as the composition of g' with the function (\<epsilon>) that maps each equivalence class in A/kernel(f)
+ to its representative. Being the composition of two injections, g is also an injection.*)
+lemma inj_surj_prop2: "\<exists>f. mappingOnto[A,B] f \<Longrightarrow> \<exists>g. embeddingMap[B,A] g" 
+  sorry (*TODO: exercise*)
+
+(*Cantor-Schroeder-Bernstein theorem: If two sets can be mapped injectively into each other then there
+ exists a bijection between them.
+Proof idea: Follows as a corollary to the Banach Decomposition Theorem, which can itself be proven
+ using the Knaster-Tarski fixed point theorem. *)
+lemma inj_surj_bij_prop: "(\<exists>f. embeddingMap[A,B] f) \<Longrightarrow> (\<exists>g. embeddingMap[B,A] g) \<Longrightarrow> (\<exists>h. bijectiveMap[A,B] h)" 
+  sorry (*TODO: exercise*)
 
 
 end

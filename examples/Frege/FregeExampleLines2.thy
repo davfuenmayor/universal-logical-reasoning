@@ -22,8 +22,6 @@ lemma "equivalence parallel" unfolding equivalence_def using REFL SYMM TRAN by a
 (*We have introduced a new term (constant) into the language (via axiomatization)*)
 term "parallel"
 term "parallel::ERel(line)"
-term "parallel::ERel*(line)"  (*error: wrong type*)
-term "parallel \<langle>a,b\<rangle>" (*error: not a well-formed formula*)
 term "parallel a b"
 
 (*Some facts about parallelism follow from being an equivalence relation*)

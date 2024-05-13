@@ -6,76 +6,87 @@ theory FregeExampleNum (* Frege - Foundations of Arithmetic \<section>62-69  (pa
 imports "../../library/pairs" "../../library/endorels"
 begin
 
-(*We can in fact provide a definition for "equinumerosity/equipollence"*)
-definition equinumerous::"ERel(Set('a))" (infix "\<sim>\<^sup>n" 99) (* Set('a) \<Rightarrow> (Set('a) \<Rightarrow> bool) *)
-  where "A \<sim>\<^sup>n B \<equiv> \<exists>f. bijectiveMap[A,B] f"
+(*We can provide a definition for "equinumerosity" of sets, following so-called "Hume's Principle".
+ It says, informally, that the number of As is equal to the number of Bs iff there is a one-to-one 
+ correspondence (a bijection) between the As and the Bs*)
+definition equinumerous::"Rel(Set('a),Set('b))" (infix "\<approx>" 99) (* Set('a) \<Rightarrow> (Set('a) \<Rightarrow> bool) *)
+  where "A \<approx> B \<equiv> \<exists>f. bijectiveMap[A,B] f"
 
-lemma REFL: "reflexive (\<sim>\<^sup>n)" 
+lemma REFL: "reflexive (\<approx>)" 
   unfolding equinumerous_def Reflexive_def func_defs by fastforce
-lemma SYMM: "symmetric (\<sim>\<^sup>n)"  
-  unfolding equinumerous_def Symmetric_def func_defs sorry (*Exercise: prove*)
-lemma TRAN: "transitive (\<sim>\<^sup>n)" 
-  sorry (*Exercise: prove*)
+lemma SYMM: "symmetric (\<approx>)"  
+  unfolding equinumerous_def Symmetric_def func_defs (*by metis*) sorry (*kernel reconstruction fails*)
+lemma TRAN: "transitive (\<approx>)" 
+  by (smt (z3) bijectiveMap_def embeddingMap_comp equinumerous_def mappingOnto_comp mappingOnto_simpdef transitive_char)
 
 (*or, in other words *)
-lemma "equivalence (\<sim>\<^sup>n)" unfolding equivalence_def using REFL SYMM TRAN by auto
+lemma "equivalence (\<approx>)" unfolding equivalence_def using REFL SYMM TRAN by auto
 
-(*We have introduced a new term into the language (via definition)*)
-term "(\<sim>\<^sup>n)"
-term "(\<sim>\<^sup>n)::ERel(Set('a))"
-term "(\<sim>\<^sup>n)::ERel*(Set('a))"  (*error: wrong type*)
-term "(\<sim>\<^sup>n) \<langle>a,b\<rangle>" (*due to polymorphism this is in fact a well-formed formula (but not what you might think)*)
-term "(\<sim>\<^sup>n) a b"
+(*Now recall that relations are also set-valued functions, so the following statement is well-formed *)
+term "(\<approx>) a" (* i.e. (\<lambda>x. a \<approx> x) set of sets equinumerous to a*)
 
-(*Some facts about equinumerousity follow from being an equivalence relation*)
-lemma "a \<sim>\<^sup>n b \<and> \<not>(c \<sim>\<^sup>n b) \<longrightarrow> \<not>(a \<sim>\<^sup>n c)"
-  by (metis SYMM Symmetric_def TRAN Transitive_def)
+(*Frege (and later Russell-Whitehead) defines the 'number' (cardinality) of a concept (set) as the 
+ set formed by all sets equinumerous to it. That is, cardinalities are defined as equivalence classes.*)
+definition cardinality::"Set('a) \<Rightarrow> Set(Set('a))" ("|_|") (*cf. Frege and Russel & Whitehead ("non-representational", Hallett 1984 "Cantorian set theory and limitation of size")*)
+  where "|a| \<equiv> \<lambda>x. a \<approx> x " (*i.e. (\<approx>) a *) (*TODO: tools have different behaviour*)
 
-(*Now recall that relations are also set-valued functions, so the following statements is well-formed *)
-term "(\<sim>\<^sup>n) a" (*set of sets equinumerous to a*)
-term "equinumerous a" (*set of sets equinumerous to a*)
-
-(*Frege defines the 'number' (cardinality) of a concept (set) as the set (equivalence class) of sets equinumerous to it *)
-definition cardinality::"Set('a) \<Rightarrow> Set(Set('a))" ("|_|")
-  where "|a| \<equiv> \<lambda>x. a \<sim>\<^sup>n x"
-
-(*The "cardinality" function assigns to a given set its cardinal(ity) (the set of sets equinumerous to it) *)
-term "cardinality"
+(*The "cardinality" function assigns to a given set its cardinality (the set of sets equinumerous to it) *)
 term "cardinality::Set('a) \<Rightarrow> Set(Set('a))"
 term "cardinality::ERel(Set('a))"
-term "cardinality A" (*the cardinal(ity) of set A *)
+term "cardinality A" (*the cardinality of set A *)
 
 (*but now note that (by eta-reduction)*)
 lemma "cardinality = equinumerous" unfolding cardinality_def ..
 
 (*The main statement: two sets are equinumerous iff they have the same cardinality*)
-lemma main: "A \<sim>\<^sup>n B \<longleftrightarrow> cardinality A = cardinality B" 
+lemma main: "A \<approx> B = ( |A| = |B| )" 
   unfolding cardinality_def by (metis REFL Reflexive_def SYMM Symmetric_def TRAN Transitive_def)
+
+
+section \<open>Comparing set sizes\<close>
+
+(*Injective account of set 'size':
+B is at least as big as A iff any two distinct members of A can be paired with distinct members of B.
+A is at least as small as B when there is an injection from A into B *)
+definition size_order::"Rel(Set('a),Set('b))" (infix "\<preceq>" 99)
+  where "A \<preceq> B \<equiv> \<exists>f. embeddingMap[A,B] f"
+
+(*Surjective account of set 'size': 
+B is at least as big as A if and only if any two distinct members of A can be paired with disjoint parts of B.
+A is at least as small as B just in case there is a surjection from B onto A (or A is empty) *)
+lemma "A \<preceq> B = (\<exists>A \<longrightarrow> (\<exists>f. mappingOnto[B,A] f))"
+  by (metis (mono_tags, lifting) inj_surj_prop1 inj_surj_prop2 injectiveFun_restr_def mapping_def size_order_def)
+
+lemma size_order_refl: "reflexive (\<preceq>)" by (metis Reflexive_def size_order_def bijectiveMap_def equinumerous_def main mappingOnto_simpdef) 
+lemma size_order_trans: "transitive (\<preceq>)"  unfolding Transitive_def size_order_def using embeddingMap_comp by blast
+lemma "antisymmetric (\<preceq>)" nitpick oops (*counterexample: size ordering is not antisymmetric *)
+
+(*The symmetric part of the size ordering corresponds to equinumerosity (aka. Cantor-Schroeder-Bernstein theorem)*)
+theorem CSB: "A \<approx> B = (A \<preceq> B \<and> B \<preceq> A)" 
+  by (meson bijectiveMap_def equinumerous_def inj_surj_bij_prop inj_surj_prop2 mappingOnto_simpdef size_order_def)
 
 
 section \<open>Towards "cardinal numbers"\<close>
 
-(*(1) define is the set of all cardinal(itie)s *)
-(*(2) define the natural ordering of cardinals *)
-(*(3) define algebraic (arithmetic) operations on cardinals*)
+(*We saw previously that equinumerosity corresponds to the identity of cardinalities: *)
+lemma "A \<approx> B \<longleftrightarrow> |A| = |B|" by (simp add: main)
+(* However, the analogous result does not hold for size orderings*)
+lemma "A \<preceq> B \<longleftrightarrow> |A| \<preceq> |B|" nitpick oops
+(*Moreover, sets are not even equinumerous to their cardinalities (which are typically much larger in size)*)
+lemma "|x| \<approx> x" nitpick oops
 
-(*The set of cardinal numbers is the range of the cardinality function (that assigns a cardinal to a set)*)
-abbreviation "\<CC> \<equiv> fRange cardinality" 
+(*These discrepancies motivate the following definition of a cardinal (number); cf. Zermelo and von Neumann *)
+abbreviation(input) cardinal::"Set('a) \<Rightarrow> Set('a)" ("|_|\<^sup>#")
+  where "|a|\<^sup># \<equiv> \<epsilon>|a|"
 
-(*We say that A is at least as small as B when there is an injection from A into B *)
-definition atLeastAsSmallAs::"Rel(Set('a),Set('b))" (infix "\<preceq>" 99)
-  where "A \<preceq> B \<equiv> (\<exists>f. mapping[A,B] f \<and> injectiveFun[A] f)"
+(*The previous definition validates in fact the desired properties: *)
+lemma "A \<approx> B \<longleftrightarrow> |A|\<^sup># = |B|\<^sup>#" using main by (metis cardinality_def some_eq_imp)
+lemma "A \<preceq> B \<longleftrightarrow> |A|\<^sup># \<preceq> |B|\<^sup>#" oops (*TODO: prove*)
+lemma "|x|\<^sup># \<approx> x" by (metis cardinality_def main someI)
 
-lemma "reflexive (\<preceq>)" oops (*Exercise: prove*)
-lemma "transitive (\<preceq>)" oops (*Exercise: prove*)
-lemma "antisymmetric (\<preceq>)" nitpick oops (*counterexample: "at least as small as" is not antisymmetric! *)
-
-(*The "at-least-as-small-as" relation can be used to provide a natural ordering for cardinals.
-  This is a major theorem in set-theory, known as the Cantor-Schroeder-Bernstein theorem.*)
-theorem CSB: "(A \<preceq> B \<and> B \<preceq> A) \<longrightarrow> A \<sim>\<^sup>n B" 
-  oops (*Advanced exercise: prove *)
-
-
+(*The set of all cardinal numbers is in fact definable as the range of the "cardinal" function*)
+term "fRange cardinal" 
+  
 (***Advanced: encoding cardinal arithmetic***)
 (*See: https://ncatlab.org/nlab/show/cardinal+arithmetic *)
 

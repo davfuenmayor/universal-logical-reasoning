@@ -29,9 +29,9 @@ lemma "\<langle>x,y\<rangle> \<top> = x" unfolding mkPair_def by simp
 lemma "\<langle>x,y\<rangle> \<bottom> = y" unfolding mkPair_def by simp
 
 (*This motivates the introduction of the following projection/extraction functions*)
-abbreviation proj1::"Pair('a) \<Rightarrow> 'a" ("\<pi>\<^sub>1")
+abbreviation(input) proj1::"Pair('a) \<Rightarrow> 'a" ("\<pi>\<^sub>1")
   where "\<pi>\<^sub>1 \<equiv> \<lambda>P. P \<top>"
-abbreviation proj2::"Pair('a) \<Rightarrow> 'a" ("\<pi>\<^sub>2")
+abbreviation(input) proj2::"Pair('a) \<Rightarrow> 'a" ("\<pi>\<^sub>2")
   where "\<pi>\<^sub>2 \<equiv> \<lambda>P. P \<bottom>"
 
 (*The following lemmata ("product laws") verify that the previous definitions work as intended. 
@@ -41,7 +41,7 @@ lemma proj2_char[pair_simps]: "\<pi>\<^sub>2\<langle>x,y\<rangle> = y" unfolding
 lemma mkPair_char[pair_simps]: "\<langle>\<pi>\<^sub>1 P, \<pi>\<^sub>2 P\<rangle> = P" apply(rule ext) unfolding mkPair_def by simp
 
 (*Let's now add the useful 'swap' (endo-)operation on pairs*)
-abbreviation swapPair::"EOp(Pair('a))" ("'(_')\<Zcat>")
+abbreviation(input) swapPair::"EOp(Pair('a))" ("'(_')\<Zcat>")
   where "(p)\<Zcat> \<equiv> \<lambda>b. p (\<not>b)"
 
 lemma swapPair_char[pair_simps]: "(\<langle>a, b\<rangle>)\<Zcat> = \<langle>b, a\<rangle>" unfolding mkPair_def by auto

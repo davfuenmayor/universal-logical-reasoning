@@ -11,7 +11,7 @@ declare[[smt_timeout=30]]
 (* declare[[show_types]] *)
 declare[[syntax_ambiguity_warning=false]]
 sledgehammer_params[isar_proof=false,abduce=0,falsify=false]
-nitpick_params[assms=true, user_axioms=true, show_all, expect=genuine, format=3] (*default Nitpick settings*)
+nitpick_params[assms=true, user_axioms=true, show_all, expect=genuine, max_potential=0,max_genuine=1, format=3] (*default Nitpick settings*)
 
 
 (*************** Hide notation/symbols from the library  *****************)
@@ -85,5 +85,9 @@ notation(input) Hilbert_Choice.Eps (binder "\<epsilon>" 10)
 (*Sanity check*)
 lemma "(\<iota> x. A x) = (THE x. A x)" ..
 lemma "(\<epsilon> x. A x) = (SOME x. A x)" ..
+
+(*Quantifiers in terms of Hilbert's epsilon*)
+lemma ex_eps:  "\<exists>\<phi> = \<phi>(\<epsilon> \<phi>)" by (simp add: verit_sko_ex)
+lemma all_eps: "\<forall>\<phi> = \<phi>(\<epsilon> (\<lambda>x. \<not>\<phi> x))" by (metis someI)
 
 end
