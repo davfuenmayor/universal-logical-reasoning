@@ -17,7 +17,7 @@ lemma REFL: "reflexive (\<approx>)"
 lemma SYMM: "symmetric (\<approx>)"  
   unfolding equinumerous_def Symmetric_def func_defs (*by metis*) sorry (*kernel reconstruction fails*)
 lemma TRAN: "transitive (\<approx>)" 
-  by (smt (z3) bijectiveMap_def embeddingMap_comp equinumerous_def mappingOnto_comp mappingOnto_simpdef transitive_char)
+  by (smt (z3) bijectiveMap_def injectiveMap_comp equinumerous_def surjectiveMap_comp surjectiveMap_simpdef transitive_char)
 
 (*or, in other words *)
 lemma "equivalence (\<approx>)" unfolding equivalence_def using REFL SYMM TRAN by auto
@@ -49,21 +49,21 @@ section \<open>Comparing set sizes\<close>
 B is at least as big as A iff any two distinct members of A can be paired with distinct members of B.
 A is at least as small as B when there is an injection from A into B *)
 definition size_order::"Rel(Set('a),Set('b))" (infix "\<preceq>" 99)
-  where "A \<preceq> B \<equiv> \<exists>f. embeddingMap[A,B] f"
+  where "A \<preceq> B \<equiv> \<exists>f. injectiveMap[A,B] f"
 
 (*Surjective account of set 'size': 
 B is at least as big as A if and only if any two distinct members of A can be paired with disjoint parts of B.
 A is at least as small as B just in case there is a surjection from B onto A (or A is empty) *)
-lemma "A \<preceq> B = (\<exists>A \<longrightarrow> (\<exists>f. mappingOnto[B,A] f))"
-  by (metis (mono_tags, lifting) inj_surj_prop1 inj_surj_prop2 injectiveFun_restr_def mapping_def size_order_def)
+lemma "A \<preceq> B = (\<exists>A \<longrightarrow> (\<exists>f. surjectiveMap[B,A] f))"
+  by (metis (mono_tags, lifting) inj_to_surj_map surj_to_inj_map injectiveFun_restr_def map_def size_order_def)
 
-lemma size_order_refl: "reflexive (\<preceq>)" by (metis Reflexive_def size_order_def bijectiveMap_def equinumerous_def main mappingOnto_simpdef) 
-lemma size_order_trans: "transitive (\<preceq>)"  unfolding Transitive_def size_order_def using embeddingMap_comp by blast
+lemma size_order_refl: "reflexive (\<preceq>)" by (metis Reflexive_def size_order_def bijectiveMap_def equinumerous_def main surjectiveMap_simpdef) 
+lemma size_order_trans: "transitive (\<preceq>)"  unfolding Transitive_def size_order_def using injectiveMap_comp by blast
 lemma "antisymmetric (\<preceq>)" nitpick oops (*counterexample: size ordering is not antisymmetric *)
 
 (*The symmetric part of the size ordering corresponds to equinumerosity (aka. Cantor-Schroeder-Bernstein theorem)*)
 theorem CSB: "A \<approx> B = (A \<preceq> B \<and> B \<preceq> A)" 
-  by (meson bijectiveMap_def equinumerous_def inj_surj_bij_prop inj_surj_prop2 mappingOnto_simpdef size_order_def)
+  by (meson bijectiveMap_def equinumerous_def inj_to_bij_map surj_to_inj_map surjectiveMap_simpdef size_order_def)
 
 
 section \<open>Towards "cardinal numbers"\<close>

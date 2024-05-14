@@ -68,9 +68,9 @@ definition bigunionR::"EOp\<^sub>N(Rel('a,'b))" ("\<Union>\<^sup>r")
   where "\<Union>\<^sup>rS \<equiv> \<lambda>a. \<Union>\<lbrakk>(\<lambda>R. R a) S\<rbrakk>"
 
 lemma biginterR_simpdef: "\<Inter>\<^sup>rS = (\<lambda>a b. \<forall>R. S R \<rightarrow> R a b)" 
-  unfolding set_defs fImage_def biginterR_def by metis
+  unfolding set_defs funImage_def biginterR_def by metis
 lemma bigunionR_simpdef: "\<Union>\<^sup>rS = (\<lambda>a b. \<exists>R. S R \<and> R a b)" 
-  unfolding set_defs fImage_def bigunionR_def by metis
+  unfolding set_defs funImage_def bigunionR_def by metis
 
 (*The definitions above are intuitive when seeing relations as binary predicates: *)
 lemma "\<UU>\<^sup>r = (\<lambda>a b. True)" ..
@@ -118,7 +118,7 @@ subsubsection \<open>Ring structure\<close>
  We now explore their shared (monoidal) algebraic structure with functions.*)
 
 (*Analogously to functions, relations can also be composed.*)
-definition rcomp::"('b,'c)Rel \<Rightarrow> ('a,'b)Rel \<Rightarrow> ('a,'c)Rel" (infixl "\<circ>\<^sup>r" 75)
+definition rcomp::"Rel('b,'c) \<Rightarrow> Rel('a,'b) \<Rightarrow> Rel('a,'c)" (infixl "\<circ>\<^sup>r" 75)
   where "T \<circ>\<^sup>r R \<equiv> \<lambda>a c. \<exists>b. R a b \<and> T b c"
 
 declare rcomp_def[rel_defs]
@@ -174,26 +174,26 @@ subsection \<open>Range, Image & preimage of relations\<close>
 
 (*Given a relation R we can obtain its (relational) range as the set of those objects in the codomain
   that have a non-empty preimage (they are the image of some object).*)
-definition rRange::"Rel('a,'b) \<Rightarrow> Set('b)"
-  where "rRange R \<equiv> \<lambda>b. \<exists>((R)\<^sup>T b)"
+definition relRange::"Rel('a,'b) \<Rightarrow> Set('b)"
+  where "relRange R \<equiv> \<lambda>b. \<exists>((R)\<^sup>T b)"
 
 (*We can extend the definitions of the set-operators "image" and "preimage" for relations too.
-  Read "rImage R A" as "the (relational) image of A under R".*)
-definition rImage::"Rel('a,'b) \<Rightarrow> Set('a) \<Rightarrow> Set('b)"
-  where "rImage R \<equiv> \<lambda>A. \<lambda>b. \<exists>a. R a b \<and> A a"
+  Read "relImage R A" as "the (relational) image of A under R".*)
+definition relImage::"Rel('a,'b) \<Rightarrow> Set('a) \<Rightarrow> Set('b)"
+  where "relImage R \<equiv> \<lambda>A. \<lambda>b. \<exists>a. R a b \<and> A a"
 
 (*Analogously, we define the "preimage" (aka. "inverse-image") set-operator corresponding to a relation.
-  Read "rPreimage R B" as "the (relational) preimage of B under R".*)
-definition rPreimage::"Rel('a,'b) \<Rightarrow> Set('b) \<Rightarrow> Set('a)"
-  where "rPreimage R \<equiv> \<lambda>B. \<lambda>a. \<exists>b. R a b \<and> B b"
+  Read "relPreimage R B" as "the (relational) preimage of B under R".*)
+definition relPreimage::"Rel('a,'b) \<Rightarrow> Set('b) \<Rightarrow> Set('a)"
+  where "relPreimage R \<equiv> \<lambda>B. \<lambda>a. \<exists>b. R a b \<and> B b"
 
 (*The notions of image and preimage of relations have in fact their 'dual' counterparts:*)
-definition rDualImage::"Rel('a,'b) \<Rightarrow> Set('a) \<Rightarrow> Set('b)"
-  where "rDualImage R    \<equiv> \<lambda>A. \<lambda>b. \<forall>a. R a b \<longrightarrow> A a"
-definition rDualPreimage::"Rel('a,'b) \<Rightarrow> Set('b) \<Rightarrow> Set('a)"
-  where "rDualPreimage R \<equiv> \<lambda>B. \<lambda>a. \<forall>b. R a b \<longrightarrow> B b"
+definition relDualImage::"Rel('a,'b) \<Rightarrow> Set('a) \<Rightarrow> Set('b)"
+  where "relDualImage R    \<equiv> \<lambda>A. \<lambda>b. \<forall>a. R a b \<longrightarrow> A a"
+definition relDualPreimage::"Rel('a,'b) \<Rightarrow> Set('b) \<Rightarrow> Set('a)"
+  where "relDualPreimage R \<equiv> \<lambda>B. \<lambda>a. \<forall>b. R a b \<longrightarrow> B b"
 
-declare rRange_def[rel_defs] rImage_def[rel_defs] rPreimage_def[rel_defs]
+declare relRange_def[rel_defs] relImage_def[rel_defs] relPreimage_def[rel_defs]
 
 
 subsection \<open>Properties of relations\<close>
@@ -203,7 +203,7 @@ subsection \<open>Properties of relations\<close>
 abbreviation(input) defined::"Rel('a,'b) \<Rightarrow> Set('a)"
   where "defined R \<equiv> \<lambda>a. \<exists>(R a)"
 
-lemma "defined R = rRange (R)\<^sup>T" unfolding rel_defs combs ..
+lemma "defined R = relRange (R)\<^sup>T" unfolding rel_defs combs ..
 
 (*A relation R is called 'total' (aka. 'serial' for endorelations) when it is defined for all elements
  in its domain. This definition can also be restricted to a subset A of R's domain. *)
@@ -220,7 +220,7 @@ lemma totalRel_simp: "totalRel[\<UU>] R = totalRel R" unfolding rel_defs set_def
 definition surjectiveRel::"Set(Rel('a,'b))"
   where "surjectiveRel R \<equiv> \<forall>b. \<exists>a. R a b"
 definition surjectiveRel_restr::"Set('a) \<Rightarrow> Set('b) \<Rightarrow>  Set(Rel('a,'b))" ("surjectiveRel[_,_]")
-  where "surjectiveRel[A,B] R \<equiv> B \<subseteq> rImage R A"
+  where "surjectiveRel[A,B] R \<equiv> B \<subseteq> relImage R A"
 
 declare surjectiveRel_def[rel_defs] surjectiveRel_restr_def[rel_defs]
 
@@ -281,9 +281,9 @@ lemma "inverse = \<^bold>B (\<^bold>B'(=)) \<^bold>B'" unfolding combs inverse_d
 lemma "\<lbrakk>f {b}\<rbrakk>\<inverse> = [f]\<inverse> b" unfolding rel_defs func_defs by auto
 
 (*Several operations and predicates on functions can be expressed in terms of the inverse*)
-lemma imageFun_def2: "fImage f = (\<lambda>A. (\<lambda>b. [f]\<inverse> b \<inter> A \<noteq> \<emptyset>))" 
+lemma imageFun_def2: "funImage f = (\<lambda>A. (\<lambda>b. [f]\<inverse> b \<inter> A \<noteq> \<emptyset>))" 
   unfolding func_defs set_defs rel_defs by meson
-lemma rangeFun_def2: "fRange f = (\<lambda>b. \<exists>([f]\<inverse> b))"
+lemma rangeFun_def2: "funRange f = (\<lambda>b. \<exists>([f]\<inverse> b))"
   unfolding func_defs rel_defs ..
 lemma "surjectiveFun[\<UU>,B] f = totalRel[B] [f]\<inverse>"
   unfolding func_defs set_defs rel_defs by simp
@@ -345,7 +345,7 @@ declare funrel_simp1[rel_simps] funrel_simp2[rel_simps]
 
 (*In fact, several notions for functions can be naturally stated in terms of relations, such as
   range, injectivity and surjectivity *)
-lemma \<open>fRange f = rRange [f]\<^sup>R\<close>
+lemma \<open>funRange f = relRange [f]\<^sup>R\<close>
   unfolding rel_defs func_defs combs ..
 lemma \<open>injectiveFun f = injectiveRel [f]\<^sup>R\<close> 
   unfolding rel_defs func_defs using Uniq_def by auto

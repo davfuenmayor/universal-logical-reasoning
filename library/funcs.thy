@@ -43,38 +43,38 @@ subsection \<open>Range, image & preimage of functions\<close>
 
 (*Given a function f we can obtain its (functional) range as the set of those objects 'b' in the 
  codomain that are the image of some object 'a' (i.e. have a non-empty preimage) under the function f.*)
-definition fRange::"('a \<Rightarrow> 'b) \<Rightarrow> Set('b)"
-  where "fRange f \<equiv> \<lambda>b. \<exists>a. f a = b"
+definition funRange::"('a \<Rightarrow> 'b) \<Rightarrow> Set('b)"
+  where "funRange f \<equiv> \<lambda>b. \<exists>a. f a = b"
 
 (*We can 'lift' functions to act on sets via the "image" operator.
-  Read "fImage f A" as "the (functional) image of A under f".*)
-definition fImage::"('a \<Rightarrow> 'b) \<Rightarrow> Set('a) \<Rightarrow> Set('b)"
-  where "fImage f \<equiv> \<lambda>A. \<lambda>b. \<exists>a. A a \<and> f a = b"
+  Read "funImage f A" as "the (functional) image of A under f".*)
+definition funImage::"('a \<Rightarrow> 'b) \<Rightarrow> Set('a) \<Rightarrow> Set('b)"
+  where "funImage f \<equiv> \<lambda>A. \<lambda>b. \<exists>a. A a \<and> f a = b"
 
 (*Analogously, we have the "preimage" (aka. "inverse-image") operator.
-  Read "fPreimage f B" as "the (functional) preimage of B under f".*)
-definition fPreimage::"('a \<Rightarrow> 'b) \<Rightarrow> Set('b) \<Rightarrow> Set('a)"
-  where "fPreimage f \<equiv> \<lambda>B. \<lambda>a. B (f a)"
+  Read "funPreimage f B" as "the (functional) preimage of B under f".*)
+definition funPreimage::"('a \<Rightarrow> 'b) \<Rightarrow> Set('b) \<Rightarrow> Set('a)"
+  where "funPreimage f \<equiv> \<lambda>B. \<lambda>a. B (f a)"
 
-lemma fImage_morph1: "fImage (f \<circ> g) = (fImage f) \<circ> (fImage g)" 
-  unfolding fImage_def combs by auto
-lemma fImage_morph2: "fImage ID = ID" 
-  unfolding fImage_def combs by simp
-lemma fPreimage_nmorph1: "fPreimage (f \<circ> g) = (fPreimage g) \<circ> (fPreimage f)" 
-  unfolding fPreimage_def combs ..
-lemma fPreImage_nmorph2: "fPreimage ID = ID" unfolding fPreimage_def combs ..
+lemma funImage_morph1: "funImage (f \<circ> g) = (funImage f) \<circ> (funImage g)" 
+  unfolding funImage_def combs by auto
+lemma funImage_morph2: "funImage ID = ID" 
+  unfolding funImage_def combs by simp
+lemma funPreimage_nmorph1: "funPreimage (f \<circ> g) = (funPreimage g) \<circ> (funPreimage f)" 
+  unfolding funPreimage_def combs ..
+lemma funPreimage_nmorph2: "funPreimage ID = ID" unfolding funPreimage_def combs ..
 
-declare fRange_def[func_defs] fImage_def[func_defs] fPreimage_def[func_defs]
+declare funRange_def[func_defs] funImage_def[func_defs] funPreimage_def[func_defs]
 
 (*Convenient notation for the image/preimage of a set under a function*)
-notation fImage ("\<lbrakk>_ _\<rbrakk>") and fPreimage ("\<lbrakk>_ _\<rbrakk>\<inverse>")
+notation funImage ("\<lbrakk>_ _\<rbrakk>") and funPreimage ("\<lbrakk>_ _\<rbrakk>\<inverse>")
 
 (*Just for fun: we paraphrase image, preimage, and range of a function using combinators *)
-lemma "fImage = (\<^bold>B \<^bold>C) (\<^bold>B (\<^bold>B (\<^bold>B ((\<noteq>) (\<^bold>K False)))) ((\<^bold>B (\<^bold>B \<^bold>S)) ((\<^bold>B (\<^bold>B (\<^bold>B (\<and>)))) (\<^bold>C ((\<^bold>B \<^bold>B) (=))))))"
+lemma "funImage = (\<^bold>B \<^bold>C) (\<^bold>B (\<^bold>B (\<^bold>B ((\<noteq>) (\<^bold>K False)))) ((\<^bold>B (\<^bold>B \<^bold>S)) ((\<^bold>B (\<^bold>B (\<^bold>B (\<and>)))) (\<^bold>C ((\<^bold>B \<^bold>B) (=))))))"
   unfolding combs func_defs by metis
-lemma "fPreimage = \<^bold>C \<^bold>B" 
+lemma "funPreimage = \<^bold>C \<^bold>B" 
   unfolding combs func_defs ..
-lemma "fRange = \<^bold>C fImage (\<lambda>x. \<top>)"
+lemma "funRange = \<^bold>C funImage (\<lambda>x. \<top>)"
   unfolding combs func_defs by simp
 
 
@@ -106,24 +106,24 @@ declare injectiveFun_def[func_defs] injectiveFun_restr_def[func_defs]
 lemma injectiveFun_univ[func_simps]: "injectiveFun[\<UU>] f = injectiveFun f" unfolding func_defs by simp
 lemma surjectiveFun_univ[func_simps]: "surjectiveFun[\<UU>,\<UU>] f = surjectiveFun f" unfolding func_defs by simp
 
-(**The set of mappings from domain-set A *into* codomain-set B.*)
-definition mapping::"Set('a) \<Rightarrow> Set('b) \<Rightarrow> Set('a \<Rightarrow> 'b)" ("mapping[_,_]")
-  where "mapping[A,B] f \<equiv> \<forall>a. A a \<rightarrow> B (f a)"
+(**The set of map(ping)s from domain-set A *into* codomain-set B.*)
+definition map::"Set('a) \<Rightarrow> Set('b) \<Rightarrow> Set('a \<Rightarrow> 'b)" ("map[_,_]")
+  where "map[A,B] f \<equiv> \<forall>a. A a \<rightarrow> B (f a)"
 
-(**The set of mappings from domain-set A *onto* a codomain-set B.*)
-definition mappingOnto::"Set('a) \<Rightarrow> Set('b) \<Rightarrow> Set('a \<Rightarrow> 'b)" ("mappingOnto[_,_]")
-  where "mappingOnto[A,B] f \<equiv> (\<lambda>b. \<exists>a. A a \<and> f a = b) = B"
+(**The set of surjective map(ping)s from domain-set A *onto* a codomain-set B.*)
+definition surjectiveMap::"Set('a) \<Rightarrow> Set('b) \<Rightarrow> Set('a \<Rightarrow> 'b)" ("surjectiveMap[_,_]")
+  where "surjectiveMap[A,B] f \<equiv> (\<lambda>b. \<exists>a. A a \<and> f a = b) = B"
 
-declare mapping_def[func_defs] mappingOnto_def[func_defs]
+declare map_def[func_defs] surjectiveMap_def[func_defs]
 
-lemma mappingOnto_simpdef: "mappingOnto[A,B] f = (mapping[A,B] f \<and> surjectiveFun[A,B] f)" 
+lemma surjectiveMap_simpdef: "surjectiveMap[A,B] f = (map[A,B] f \<and> surjectiveFun[A,B] f)" 
   unfolding func_defs by auto
 
-abbreviation(input) embeddingMap ("embeddingMap[_,_]") 
-  where "embeddingMap[A,B] f \<equiv> mapping[A,B] f \<and> injectiveFun[A] f"
+abbreviation(input) injectiveMap ("injectiveMap[_,_]") (*aka. embedding*) 
+  where "injectiveMap[A,B] f \<equiv> map[A,B] f \<and> injectiveFun[A] f"
 
 definition bijectiveMap ("bijectiveMap[_,_]")
-  where "bijectiveMap[A,B] f \<equiv> mappingOnto[A,B] f \<and> injectiveFun[A] f"
+  where "bijectiveMap[A,B] f \<equiv> surjectiveMap[A,B] f \<and> injectiveFun[A] f"
 
 declare bijectiveMap_def[func_defs]
 
@@ -132,44 +132,44 @@ lemma "bijectiveMap[A,B] f = (injectiveFun[A] f \<and> surjectiveFun[A,B] f)"
   nitpick oops (*counterexample*)
 
 lemma bijectiveMap_simp[func_simps]: "bijectiveMap[\<UU>,\<UU>] f = bijectiveFun f"
-  unfolding bijectiveMap_def mappingOnto_simpdef func_defs by auto
+  unfolding bijectiveMap_def surjectiveMap_simpdef func_defs by auto
 
 (*Properties of function composition*)
-lemma mapping_comp: "mapping[A,B] f \<Longrightarrow> mapping[B,C] g \<Longrightarrow> mapping[A,C] (g\<circ>f)" 
-  by (simp add: Bc_def mapping_def)
-
-lemma embeddingMap_comp: "embeddingMap[A,B] f \<Longrightarrow> embeddingMap[B,C] g \<Longrightarrow> embeddingMap[A,C] (g\<circ>f)" 
-  by (simp add: Bc_def injectiveFun_restr_def mapping_def)
-
-lemma surjective_comp: "surjectiveFun[A,B] f \<Longrightarrow> surjectiveFun[B,C] g \<Longrightarrow> surjectiveFun[A,C] (g\<circ>f)"
+lemma surjective_comp: "surjectiveFun[A,B] f \<Longrightarrow> surjectiveFun[B,C] g \<Longrightarrow> surjectiveFun[A,C] (g \<circ> f)"
   unfolding surjectiveFun_restr_def Bc_def by (smt (z3))
 
-lemma mappingOnto_comp: "mappingOnto[A,B] f \<Longrightarrow> mappingOnto[B,C] g \<Longrightarrow> mappingOnto[A,C] (g\<circ>f)" 
-  unfolding mappingOnto_simpdef using mapping_comp surjective_comp by blast
+lemma map_comp: "map[A,B] f \<Longrightarrow> map[B,C] g \<Longrightarrow> map[A,C] (g \<circ> f)" 
+  by (simp add: Bc_def map_def)
+
+lemma injectiveMap_comp: "injectiveMap[A,B] f \<Longrightarrow> injectiveMap[B,C] g \<Longrightarrow> injectiveMap[A,C] (g \<circ> f)" 
+  by (simp add: Bc_def injectiveFun_restr_def map_def)
+
+lemma surjectiveMap_comp: "surjectiveMap[A,B] f \<Longrightarrow> surjectiveMap[B,C] g \<Longrightarrow> surjectiveMap[A,C] (g \<circ> f)" 
+  unfolding surjectiveMap_simpdef using map_comp surjective_comp by blast
 
 
 (*Further interesting lemmata*)
 
 (*If A can be mapped injectively (embedded) into B then B can be mapped onto A (assuming A non-empty)
-Proof idea: Starting with an injection f from A into B, construct an (surjective) mapping g from 
+Proof idea: Starting with an injection f from A into B, construct an (surjective) map g from 
  B onto A, recalling that for x \<in> B we have that f\<inverse>(x) \<inter> A is either:
   (1) a singleton: take g(x) = \<iota>x.f\<inverse>(x) (because f is injective wrt A)
   (2) empty: take g(x) = c for an arbitrary c \<in> A (since A is non-empty)  *)
-lemma inj_surj_prop1: "\<exists>A \<Longrightarrow> \<exists>f. embeddingMap[A,B] f \<Longrightarrow> \<exists>g. mappingOnto[B,A] g" 
+lemma inj_to_surj_map: "\<exists>A \<Longrightarrow> \<exists>f. injectiveMap[A,B] f \<Longrightarrow> \<exists>g. surjectiveMap[B,A] g" 
   sorry (*TODO: exercise*)
 
 (*If A can be mapped onto B then B can be mapped injectively (embedded) into A
-Proof idea: Start with a map f from A onto B, let g' be the (injective) mapping from B onto A/kernel(f).
+Proof idea: Start with a map f from A onto B, let g' be the (injective) map from B onto A/kernel(f).
  Define g as the composition of g' with the function (\<epsilon>) that maps each equivalence class in A/kernel(f)
  to its representative. Being the composition of two injections, g is also an injection.*)
-lemma inj_surj_prop2: "\<exists>f. mappingOnto[A,B] f \<Longrightarrow> \<exists>g. embeddingMap[B,A] g" 
+lemma surj_to_inj_map: "\<exists>f. surjectiveMap[A,B] f \<Longrightarrow> \<exists>g. injectiveMap[B,A] g"
   sorry (*TODO: exercise*)
 
 (*Cantor-Schroeder-Bernstein theorem: If two sets can be mapped injectively into each other then there
  exists a bijection between them.
 Proof idea: Follows as a corollary to the Banach Decomposition Theorem, which can itself be proven
  using the Knaster-Tarski fixed point theorem. *)
-lemma inj_surj_bij_prop: "(\<exists>f. embeddingMap[A,B] f) \<Longrightarrow> (\<exists>g. embeddingMap[B,A] g) \<Longrightarrow> (\<exists>h. bijectiveMap[A,B] h)" 
+lemma inj_to_bij_map: "\<exists>f. injectiveMap[A,B] f \<Longrightarrow> \<exists>g. injectiveMap[B,A] g \<Longrightarrow> \<exists>h. bijectiveMap[A,B] h" 
   sorry (*TODO: exercise*)
 
 

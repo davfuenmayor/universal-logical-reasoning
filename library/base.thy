@@ -59,14 +59,14 @@ no_syntax
 (*Introduce alias for type bool*)
 type_synonym o = bool ("o")
 
-(*We introduce (pedagogically convenient) alternative notation for HOL logical constants*)
+(*We introduce (pedagogically convenient) notation for HOL logical constants*)
 notation HOL.All ("\<forall>") 
 notation HOL.Ex  ("\<exists>")
 
 notation HOL.True  ("\<top>")
 notation HOL.False ("\<bottom>")
 
-notation(input) HOL.Not ("'(\<not>')") (*so we can refer to negation as: (\<not>)*)
+notation(input) HOL.Not ("'(\<not>')") (*this allows us to refer to negation as: (\<not>)*)
 
 notation HOL.implies (infixr "\<rightarrow>" 25)
 notation HOL.iff (infixr "\<leftrightarrow>" 25)
@@ -87,7 +87,7 @@ lemma "(\<iota> x. A x) = (THE x. A x)" ..
 lemma "(\<epsilon> x. A x) = (SOME x. A x)" ..
 
 (*Quantifiers in terms of Hilbert's epsilon*)
-lemma ex_eps:  "\<exists>\<phi> = \<phi>(\<epsilon> \<phi>)" by (simp add: verit_sko_ex)
-lemma all_eps: "\<forall>\<phi> = \<phi>(\<epsilon> (\<lambda>x. \<not>\<phi> x))" by (metis someI)
+lemma ex_eps:  "\<exists>\<phi> = \<phi>(\<epsilon> x. \<phi> x)" by (simp add: verit_sko_ex)
+lemma all_eps: "\<forall>\<phi> = \<phi>(\<epsilon> x. \<not>\<phi> x)" by (metis someI)
 
 end

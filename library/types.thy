@@ -10,7 +10,7 @@ section \<open>Type Constructors\<close>
 
 (*Classifiers and indexers*)
 type_synonym ('v,'a)Class = "'a \<Rightarrow> 'v" ("_-Class'(_')" [99])
-type_synonym ('w,'a)Index = "'w \<Rightarrow> 'a" ("_-Index'(_')" [99])
+type_synonym ('k,'a)Index = "'k \<Rightarrow> 'a" ("_-Index'(_')" [99])
 
 (*Sets and pairs as unary type constructors*)
 type_synonym ('a)Set = "o-Class('a)" ("Set(_)" [99])    (*same as: 'a \<Rightarrow> o *)
@@ -23,8 +23,8 @@ type_synonym ('a)ERel = "Rel('a,'a)" ("ERel(_)" [99])  (*same as: 'a \<Rightarro
 
 
 (*As a convenient mathematical abstraction, we introduce the notion of "operation".
-In mathematical phraseology, operations are said to 'operate' on (one or more) operands.
-Thus, operations can be seen as (curried) functions whose arguments have all the same type.*)
+In mathematical phraseology, operations are said to "operate" on (one or more) "operands".
+Operations can be seen as (curried) functions whose arguments have all the same type.*)
 
 (*Unary case: (endo)operations just correspond to (endo)functions*)
 type_synonym ('a,'b)Op1 = "'a \<Rightarrow> 'b" ("Op'(_,_')" [99])

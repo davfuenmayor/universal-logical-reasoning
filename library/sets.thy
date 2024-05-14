@@ -26,8 +26,8 @@ abbreviation(input) threeElem::"'a \<Rightarrow> 'a \<Rightarrow> 'a \<Rightarro
 
 (*By comprehension: Write "imageFun (\<lambda>x. t\<^sub>x) S" for "{ t\<^sub>x | x in S }" (where x is free in term t\<^sub>x)
  For example: *)
-lemma "(fImage (\<lambda>x::int. 2*x) {1,2,3}) = {2,4,6}" (*corresponds to { 2*x | x in {1,2,3} } *)
-  unfolding fImage_def by auto
+lemma "(funImage (\<lambda>x::int. 2*x) {1,2,3}) = {2,4,6}" (*corresponds to { 2*x | x in {1,2,3} } *)
+  unfolding funImage_def by auto
 
 
 subsection \<open>Basic Predicates\<close>

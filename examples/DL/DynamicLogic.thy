@@ -22,8 +22,8 @@ abbreviation(input) pDia::"\<pi>-Index(EOp(\<sigma>))" ("<_>_") (*type: ERel(w) 
   where "<a>P \<equiv> \<lambda>w. \<exists>v. a w v \<and> P v"
 
 (*Note that in fact*)
-lemma pBox_char: "pBox = rDualPreimage" unfolding rDualPreimage_def by simp
-lemma pDia_char: "pDia = rPreimage" unfolding rPreimage_def by simp
+lemma pBox_char: "pBox = relDualPreimage" unfolding relDualPreimage_def by simp
+lemma pDia_char: "pDia = relPreimage" unfolding relPreimage_def by simp
 
 (*Diamond (resp. Box) is monotonic (resp. antimonotonic) wrt. relation ordering*)
 lemma "a \<subseteq>\<^sup>r b \<longrightarrow> <a>P \<subseteq> <b>P" by (smt (verit, best) subset_def)
@@ -68,8 +68,8 @@ lemma "<a+b>P = (<a>P) \<^bold>\<or> (<b>P)" unfolding inter_def union_def by bl
 abbreviation choiceS::"Set(\<pi>) \<Rightarrow> \<pi>" ("\<Sigma>")
   where "\<Sigma> S \<equiv> \<Union>\<^sup>rS" 
 
-lemma "[ \<Sigma> S ]P = \<Inter>\<lbrakk>(\<lambda>x. [x]P) S\<rbrakk>" unfolding  biginter_def bigunionR_simpdef fImage_def by fastforce
-lemma "< \<Sigma> S >P = \<Union>\<lbrakk>(\<lambda>x. <x>P) S\<rbrakk>" unfolding  bigunion_def bigunionR_simpdef fImage_def by fastforce
+lemma "[ \<Sigma> S ]P = \<Inter>\<lbrakk>(\<lambda>x. [x]P) S\<rbrakk>" unfolding  biginter_def bigunionR_simpdef funImage_def by fastforce
+lemma "< \<Sigma> S >P = \<Union>\<lbrakk>(\<lambda>x. <x>P) S\<rbrakk>" unfolding  bigunion_def bigunionR_simpdef funImage_def by fastforce
 
 (*(Reflexive-)transitive closure: "repeat 'a' an undetermined number of times"*)
 definition tran_closure::"\<pi> \<Rightarrow> \<pi>" ("(_\<^sup>+)" 99)

@@ -25,13 +25,13 @@ abbreviation dl_bot ("\<^bold>\<bottom>")
   where "\<^bold>\<bottom> \<equiv> \<emptyset>"
 
 abbreviation dl_ex ("\<^bold>\<exists>_\<sqdot>_")   (*notation warning: the thick dot is written: \sqdot *)
-  where "\<^bold>\<exists>r\<sqdot>C \<equiv> rPreimage r C"
+  where "\<^bold>\<exists>r\<sqdot>C \<equiv> relPreimage r C"
 abbreviation dl_all ("\<^bold>\<forall>_\<sqdot>_")
-  where "\<^bold>\<forall>r\<sqdot>C \<equiv> rDualPreimage r C"
+  where "\<^bold>\<forall>r\<sqdot>C \<equiv> relDualPreimage r C"
 
 (*recalling definitions*)
-lemma "\<^bold>\<exists>r\<sqdot>C = (\<lambda>a. \<exists>b. r a b \<and> C b)" by (simp add: rPreimage_def)
-lemma "\<^bold>\<forall>r\<sqdot>C = (\<lambda>a. \<forall>b. r a b \<rightarrow> C b)" by (simp add: rDualPreimage_def)
+lemma "\<^bold>\<exists>r\<sqdot>C = (\<lambda>a. \<exists>b. r a b \<and> C b)" by (simp add: relPreimage_def)
+lemma "\<^bold>\<forall>r\<sqdot>C = (\<lambda>a. \<forall>b. r a b \<rightarrow> C b)" by (simp add: relDualPreimage_def)
 
 (*(Qualified) number restrictions \<le>\<^sub>nr (\<le>\<^sub>nr.C) can also be introduced (see below for an example) *)
 
@@ -63,9 +63,9 @@ subsection \<open>Extended language constructs\<close>
 
 (*HOL-variables can act as nominals (i.e. proper names for individuals)*)
 lemma "x : \<^bold>\<exists>bornIn\<sqdot>{Bamberg} \<leftrightarrow> bornIn x Bamberg"
-  by (simp add: rPreimage_def)
+  by (simp add: relPreimage_def)
 lemma "Anne : \<^bold>\<exists>bornIn\<sqdot>{Tokio, London, Bamberg} \<leftrightarrow> (bornIn Anne Tokio) \<or> (bornIn Anne London) \<or> (bornIn Anne Bamberg)"
-  by (smt (verit) rPreimage_def)
+  by (smt (verit) relPreimage_def)
 
 
 (*Roles (being relations) can be composed with each other (cf. relation composition)*)
@@ -95,7 +95,7 @@ lemma assumes "symmetric(dates)"
           and "Klaus \<noteq> John \<and> Klaus \<noteq> Mary"
           and "Anne : \<^bold>\<forall>dates\<sqdot>{John,Mary}"
         shows "Klaus : \<^bold>\<exists>(\<midarrow>\<^sup>rdates)\<sqdot>{Anne}"
-  by (smt (verit, ccfv_SIG) Symmetric_def assms(1) assms(2) assms(3) compl_def rDualPreimage_def rPreimage_def)
+  by (smt (verit, ccfv_SIG) Symmetric_def assms(1) assms(2) assms(3) compl_def relDualPreimage_def relPreimage_def)
 
 
 
@@ -111,7 +111,7 @@ abbreviation tran_closure::"ERel('i) \<Rightarrow> ERel('i)" ("_\<^sup>+")
 (*Number restrictions are expressions of the form:  \<le>\<^sub>nr (\<le>\<^sub>nr.C) 
   We encode them using a 'trick' from the literature.*)
 abbreviation diff_dia::"Set('i) \<Rightarrow> Set('i)" ("\<D>") (*specially crafted definition (the 'trick')*)
-  where "\<D> \<equiv> rPreimage (\<noteq>)"
+  where "\<D> \<equiv> relPreimage (\<noteq>)"
 
 (*Encode the quantifier 'more than 1/2/etc'*)
 abbreviation morethan1::"Set('i) \<Rightarrow> bool" ("\<Sigma>\<^sub>>\<^sub>1_")
@@ -123,10 +123,10 @@ abbreviation morethan2::"Set('i) \<Rightarrow> bool" ("\<Sigma>\<^sub>>\<^sub>2_
 
 lemma "\<Sigma>\<^sub>>\<^sub>1{a,b}" nitpick oops (*counterexample*)
 lemma "a \<noteq> b \<longrightarrow> \<Sigma>\<^sub>>\<^sub>1 {a,b,c}" 
-  by (smt (verit, del_insts) inter_def rPreimage_def subset_def)
+  by (smt (verit, del_insts) inter_def relPreimage_def subset_def)
 lemma "\<Sigma>\<^sub>>\<^sub>2{a,b,c}" nitpick oops (*counterexample*)
 lemma "a \<noteq> b \<and> a \<noteq> c \<and> c \<noteq> b \<longrightarrow> \<Sigma>\<^sub>>\<^sub>2{a,b,c}"
-  unfolding inter_def rPreimage_def subset_def by (smt (verit, best) union_def) 
+  unfolding inter_def relPreimage_def subset_def by (smt (verit, best) union_def) 
 
 
 (* ... *)

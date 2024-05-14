@@ -19,8 +19,6 @@ axiomatization parallel::"Pair(line) \<Rightarrow> bool"
 (*We have introduced a new term (constant) into the language (via axiomatization)*)
 term "parallel"
 term "parallel::ERel*(line)"
-term "parallel::ERel(line)"  (*error: wrong type*)
-term "parallel a b" (*error: not a well-formed formula*)
 term "parallel \<langle>a,b\<rangle>"
 
 (*Some facts about parallelism follow from being an equivalence relation*)
@@ -33,10 +31,8 @@ definition direction::"line \<Rightarrow> Set(line)"
 (*We have introduced a new term into the language (via definition)*)
 term "direction"
 term "direction::ERel(line)"
-term "direction::ERel*(line)" (*wrong type*)
 term "(direction a)::Set(line)"
 term "direction a b"
-term "direction \<langle>a,b\<rangle>" (*error: not a well-formed formula*)
 
 
 (*The main statement: two lines are parallel iff their directions are identical*)

@@ -43,7 +43,7 @@ axiomatization where
 
 (* Given the background knowledge, we can infer that GeorgeOrwell is a writer*)
 lemma "GeorgeOrwell : Writer"
-  by (metis (full_types) A1 A2 A3 T1 T2 inter_def rPreimage_def subset_def)
+  by (metis (full_types) A1 A2 A3 T1 T2 inter_def relPreimage_def subset_def)
 
 (* Can we infer that GeorgeOrwell is European?*)
 lemma "GeorgeOrwell : European" nitpick oops (*countermodel found: background knowledge is missing *)

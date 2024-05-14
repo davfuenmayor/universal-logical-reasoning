@@ -59,10 +59,10 @@ Thus, the set of directions is the "quotient" of the set of lines by the "parall
 *)
 
 (*We can encode the set of directions as the range of the direction/parallel function (that assigns a direction to a line)*)
-abbreviation "Directions \<equiv> fRange parallel" 
+abbreviation "Directions \<equiv> funRange parallel" 
 
 (*In other words:*)
-lemma "Directions = fImage parallel \<UU>" unfolding rel_defs func_defs by simp
+lemma "Directions = funImage parallel \<UU>" unfolding rel_defs func_defs by simp
 
 
 (* The (equivalence) relation "parallel" is the kernel of the function "direction" *)
@@ -93,6 +93,6 @@ lemma "equivalence R \<longleftrightarrow> (R = (ker R))" unfolding kernel_def b
 (*And we can even define the quotient of a set S by an equivalence relation R as: *)
 (* definition quotient::"Set('a) \<Rightarrow> ('a \<Rightarrow> 'b) \<Rightarrow> Set('b)" (infix "'/" 99) *)
 definition quotient::"Set('a) \<Rightarrow> ERel('a) \<Rightarrow> Set(Set('a))" (infix "'/" 99)
-  where "S / R = fImage R S" 
+  where "S / R = funImage R S" 
 
 end
