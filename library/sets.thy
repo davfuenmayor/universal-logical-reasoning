@@ -15,6 +15,12 @@ named_theorems set_simps
 
 subsection \<open>Constructing sets\<close>
 
+(*The "universal" and the "empty" set.*)
+abbreviation(input) univ::"Set('a)" ("\<UU>")
+  where "\<UU> \<equiv> \<lambda>x. \<top>"
+abbreviation(input) empty::"Set('a)" ("\<emptyset>")
+  where "\<emptyset> \<equiv> \<lambda>x. \<bottom>"
+
 (*By extension/enumeration:*)
 abbreviation(input) oneElem::"'a \<Rightarrow> Set('a)" ("{_}")
   where \<open>{a} \<equiv> \<lambda>x. a = x\<close>  (* i.e. (=)a *)
