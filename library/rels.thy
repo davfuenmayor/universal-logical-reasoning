@@ -196,6 +196,11 @@ definition relDualPreimage::"Rel('a,'b) \<Rightarrow> Set('b) \<Rightarrow> Set(
 declare relRange_def[rel_defs] relImage_def[rel_defs] relPreimage_def[rel_defs]
 
 
+(*Some miscelaneous characterizations*)
+lemma "relImage R A = \<Union>(funImage R A)" 
+  unfolding relImage_def funImage_def bigunion_def by metis
+
+
 subsection \<open>Inverting functions\<close>
 
 (*The "inverse" of a function 'f' is the a relation that assigns to each object 'b' in f's codomain

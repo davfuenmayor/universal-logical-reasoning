@@ -74,6 +74,16 @@ notation HOL.iff (infixr "\<leftrightarrow>" 25)
 abbreviation (input) seilpmi  (infixl "\<leftarrow>" 25) (*for convenience*)
   where "A \<leftarrow> B \<equiv> B \<rightarrow> A"
 
+(*Add convenient logical connectives*)
+abbreviation excludes  (infixl "\<leftharpoonup>" 25) (*aka. co-implication*)
+  where "A \<leftharpoonup> B \<equiv> A \<and> \<not>B"
+abbreviation (input) sedulcxe  (infixr "\<rightharpoonup>" 25) (*aka. dual-implication*)
+  where "A \<rightharpoonup> B \<equiv> B \<leftharpoonup> A"
+
+(*Check duality:*)
+lemma disj_impl: "(A \<or> B) = ((A \<rightarrow> B) \<rightarrow> B)" by auto
+lemma conj_excl: "(A \<and> B) = ((A \<rightharpoonup> B) \<rightharpoonup> B)" by auto
+
 (*Add (binder) notation for definite descriptions (incl. binder notation)*)
 notation(input) HOL.The ("\<iota>")
 notation(input) HOL.The (binder "\<iota>" 10)
@@ -88,6 +98,6 @@ lemma "(\<epsilon> x. A x) = (SOME x. A x)" ..
 
 (*Quantifiers in terms of Hilbert's epsilon*)
 lemma ex_eps:  "\<exists>\<phi> = \<phi>(\<epsilon> x. \<phi> x)" by (simp add: verit_sko_ex)
-lemma all_eps: "\<forall>\<phi> = \<phi>(\<epsilon> x. \<not>\<phi> x)" by (metis someI)
+lemma all_eps: "\<forall>\<phi> = \<phi>(\<epsilon> x. \<not>\<phi> x)"  by (simp add: verit_sko_forall)
 
 end

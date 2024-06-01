@@ -68,20 +68,15 @@ lemma injectiveRel_simp1: "injectiveRel[\<UU>,\<UU>] R = injectiveRel R"
 lemma injectiveRel_simp2: \<open>injectiveRel[\<UU>,B] R = deterministicRel[B] (R)\<^sup>T\<close> 
   unfolding rel_defs set_defs by simp
 
+(*Some miscelaneous characterizations*)
+lemma "surjectiveRel R = (\<Inter>(funRange (\<midarrow>\<^sup>rR)) = \<emptyset>)"
+  unfolding biginter_def compl_def funRange_def surjectiveRel_def by metis
+lemma "totalRel R = (\<UU> \<subseteq> relPreimage (R) \<UU>)"
+  by (simp add: relPreimage_def subset_def totalRel_def)
 
-subsection \<open>Inverses of Functions\<close>
-
-(*The inverse of a function (qua relation) is always injective and surjective*)
-lemma "injectiveRel [f]\<inverse>" unfolding rel_defs by (simp add: Uniq_def)
-lemma "surjectiveRel [f]\<inverse>" unfolding rel_defs by (simp add: Uniq_def)
-
-(*The inverse of a function gets its name from the following property of injective functions:*)
-lemma "injectiveFun f \<rightarrow> \<iota> \<circ> [f]\<inverse> \<circ> f = ID"
-  unfolding func_defs rel_defs combs by (simp add: the_equality)
-
-(*The previous property motivates introducing the notion of 'inverse function' of a (bijective) function.*)
-abbreviation(input) inverseFunction::"('a \<Rightarrow> 'b) \<Rightarrow> ('b \<Rightarrow> 'a)" ("'(_')\<inverse>")
-  where "(f)\<inverse> \<equiv> \<iota> \<circ> [f]\<inverse>" (*Beware: this definition is well-behaved for bijective functions only!*)
+lemma "injectiveRel R = ((\<noteq>) \<subseteq>\<^sup>r (\<lambda>x y. \<UU> \<subseteq> (\<midarrow>\<^sup>rR x) \<union> (\<midarrow>\<^sup>rR y)))" oops
+lemma "(injectiveRel R) = (((\<noteq>) \<inter>\<^sup>r (\<lambda>x y. (R x) \<inter> (R y) \<noteq> \<emptyset>)) = \<emptyset>\<^sup>r)" oops
+lemma "deterministicRel R = (\<forall>x y. x \<noteq> y \<longrightarrow> (R)\<^sup>T x \<inter> (R)\<^sup>T y = \<emptyset>)" oops
 
 
 subsection \<open>From functions to relations (and viceversa)\<close>
@@ -107,6 +102,18 @@ lemma "deterministicRel [f]\<^sup>R" unfolding rel_defs set_defs by simp
 (*The two previous ways of lifting functions to relations are in fact closely related: *)
 lemma \<open>[f]\<inverse> = ([f]\<^sup>R)\<^sup>T\<close>
   unfolding rel_defs combs ..
+
+(*The inverse of a function (qua relation) is always injective and surjective*)
+lemma "injectiveRel [f]\<inverse>" unfolding rel_defs by (simp add: Uniq_def)
+lemma "surjectiveRel [f]\<inverse>" unfolding rel_defs by (simp add: Uniq_def)
+
+(*The inverse of a function gets its name from the following property of injective functions:*)
+lemma "injectiveFun f \<Longrightarrow> \<iota> \<circ> [f]\<inverse> \<circ> f = ID"
+  unfolding func_defs rel_defs combs by (simp add: the_equality)
+
+(*The previous property motivates introducing the notion of 'inverse function' of a (bijective) function.*)
+abbreviation(input) inverseFunction::"('a \<Rightarrow> 'b) \<Rightarrow> ('b \<Rightarrow> 'a)" ("'(_')\<inverse>")
+  where "(f)\<inverse> \<equiv> \<iota> \<circ> [f]\<inverse>" (*Beware: this definition is well-behaved for bijective functions only!*)
 
 
 subsection \<open>Relations to functions\<close>
@@ -134,6 +141,14 @@ lemma funrel_simp2: "functionalRel R \<Longrightarrow> [[R]\<^sub>f]\<^sup>R = R
   unfolding rel_defs set_defs apply (rule ext)+ by (metis theI)
 
 declare funrel_simp1[rel_simps] funrel_simp2[rel_simps]
+
+(*In fact*)
+lemma "toRel = \<^bold>B (=)" unfolding rel_defs combs ..
+lemma "toRel = \<^bold>B \<^bold>C inverse" unfolding rel_defs combs ..
+lemma "toFun = \<^bold>B \<iota>" unfolding rel_defs combs ..
+
+lemma "toRel a = ([a]\<inverse>)\<^sup>T" by (simp add: Cc_def inverse_def toRel_def)
+lemma "(f)\<inverse> = toFun [f]\<inverse>" by (simp add: Bc_def toFun_def)
 
 
 (*In fact, several notions for functions can be naturally stated in terms of relations, such as
